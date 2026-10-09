@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://bw3sre2ow8typ"]
+
+[ext_resource type="Script" uid="uid://brcvb24yli3fm" path="res://scripts/player.gd" id="1_player"]
+[ext_resource type="Script" uid="uid://bpa4s01tk3vbk" path="res://scripts/snow_storm.gd" id="2_storm"]
+[ext_resource type="Script" uid="uid://uv45gd76ok5q" path="res://scripts/forest.gd" id="3_forest"]
+[ext_resource type="Script" uid="uid://dqghmtka4cjv5" path="res://scripts/map_bounds.gd" id="4_bounds"]
+[ext_resource type="PackedScene" path="res://scenes/props/bison_carcass.tscn" id="5_bison"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_night"]
+sky_top_color = Color(0.01, 0.012, 0.025, 1)
+sky_horizon_color = Color(0.05, 0.06, 0.08, 1)
+ground_bottom_color = Color(0.02, 0.02, 0.03, 1)
+ground_horizon_color = Color(0.05, 0.06, 0.08, 1)
+
+[sub_resource type="Sky" id="Sky_night"]
+sky_material = SubResource("ProceduralSkyMaterial_night")
+
+[sub_resource type="Environment" id="Environment_storm"]
+background_mode = 2
+sky = SubResource("Sky_night")
+ambient_light_source = 2
+ambient_light_color = Color(0.35, 0.4, 0.5, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 3
+glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.42, 0.46, 0.53, 1)
+fog_density = 0.0325
+fog_sky_affect = 0.8
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.01
+volumetric_fog_emission = Color(0.35, 0.38, 0.45, 1)
+volumetric_fog_emission_energy = 0.4
+volumetric_fog_length = 80.0
+volumetric_fog_ambient_inject = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_snow"]
+albedo_color = Color(0.62, 0.64, 0.68, 1)
+roughness = 0.95
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+material = SubResource("StandardMaterial3D_snow")
+size = Vector2(400, 400)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ground"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
+radius = 0.3
+height = 1.78
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_player"]
+albedo_color = Color(0.75, 0.25, 0.15, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_player"]
+material = SubResource("StandardMaterial3D_player")
+radius = 0.3
+height = 1.78
+
+[node name="Main" type="Node3D" unique_id=1983626017]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=408806856]
+environment = SubResource("Environment_storm")
+
+[node name="Moonlight" type="DirectionalLight3D" parent="." unique_id=362808766]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 20, 0)
+light_color = Color(0.7, 0.76, 0.9, 1)
+light_energy = 0.2
+shadow_enabled = true
+sky_mode = 1
+
+[node name="Ground" type="StaticBody3D" parent="." unique_id=329331001]
+
+[node name="Mesh" type="MeshInstance3D" parent="Ground" unique_id=1758725312]
+mesh = SubResource("PlaneMesh_ground")
+
+[node name="Collision" type="CollisionShape3D" parent="Ground" unique_id=1761005610]
+shape = SubResource("WorldBoundaryShape3D_ground")
+
+[node name="MapBounds" type="Node3D" parent="." unique_id=1203155874]
+script = ExtResource("4_bounds")
+
+[node name="Forest" type="Node3D" parent="." unique_id=1759031122]
+script = ExtResource("3_forest")
+
+[node name="Player" type="CharacterBody3D" parent="." unique_id=942901943]
+script = ExtResource("1_player")
+
+[node name="Collision" type="CollisionShape3D" parent="Player" unique_id=1574908270]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
+shape = SubResource("CapsuleShape3D_player")
+
+[node name="Body" type="MeshInstance3D" parent="Player" unique_id=1076589425]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
+mesh = SubResource("CapsuleMesh_player")
+
+[node name="Head" type="Node3D" parent="Player" unique_id=600899108]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.66, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Player/Head" unique_id=171729902]
+current = true
+
+[node name="BisonCarcass" parent="." unique_id=1037808181 instance=ExtResource("5_bison")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 1.5, 0, -5)
+
+[node name="SnowStorm" type="Node3D" parent="." unique_id=2091973302]
+script = ExtResource("2_storm")
+max_flakes = 60000
+cloud_density_storm = 0.4
+cloud_glow = 0.6
+cloud_coverage = 0.4
+cloud_scale = 18.0
+world_environment = NodePath("../WorldEnvironment")

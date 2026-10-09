@@ -1,0 +1,168 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/bison_carcass.gd" id="1_rshaf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3g710"]
+albedo_color = Color(0.2, 0.13, 0.08, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fktpw"]
+albedo_color = Color(0.12, 0.08, 0.05, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8weij"]
+albedo_color = Color(0.08, 0.07, 0.06, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u2xft"]
+albedo_color = Color(0.05, 0.05, 0.05, 1)
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l36rf"]
+albedo_color = Color(0.35, 0.04, 0.04, 1)
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yvj5m"]
+albedo_color = Color(0.85, 0.88, 0.95, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_pi7k4"]
+material = SubResource("StandardMaterial3D_yvj5m")
+
+[node name="BisonCarcass" type="Node3D" unique_id=565727389]
+script = ExtResource("1_rshaf")
+
+[node name="Body" type="CSGCombiner3D" parent="." unique_id=1354925446]
+use_collision = true
+
+[node name="Torso" type="CSGSphere3D" parent="Body" unique_id=1349877823]
+transform = Transform3D(2.6, 0, 0, 0, 1.1, 0, 0, 0, 1.4, 0, 0.55, 0)
+radial_segments = 24
+rings = 16
+material = SubResource("StandardMaterial3D_3g710")
+
+[node name="Hump" type="CSGSphere3D" parent="Body" unique_id=300378278]
+transform = Transform3D(1.3, 0, 0, 0, 1, 0, 0, 0, 1.1, 0.7, 0.6, 0.45)
+radial_segments = 24
+rings = 16
+material = SubResource("StandardMaterial3D_3g710")
+
+[node name="Mane" type="CSGSphere3D" parent="Body" unique_id=1911713322]
+transform = Transform3D(1.1, 0, 0, 0, 1.2, 0, 0, 0, 1.35, 0.85, 0.6, 0.05)
+radial_segments = 24
+rings = 16
+material = SubResource("StandardMaterial3D_fktpw")
+
+[node name="Rump" type="CSGSphere3D" parent="Body" unique_id=733054897]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1.15, -0.85, 0.55, 0.05)
+radial_segments = 24
+rings = 16
+material = SubResource("StandardMaterial3D_3g710")
+
+[node name="Head" type="CSGSphere3D" parent="Body" unique_id=712112199]
+transform = Transform3D(0.8, 0, 0, 0, 0.6, 0, 0, 0, 0.65, 1.6, 0.4, -0.1)
+radial_segments = 24
+rings = 16
+material = SubResource("StandardMaterial3D_fktpw")
+
+[node name="Muzzle" type="CSGSphere3D" parent="Body" unique_id=1202488402]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.42, 2, 0.32, -0.25)
+radial_segments = 24
+rings = 16
+material = SubResource("StandardMaterial3D_3g710")
+
+[node name="Beard" type="CSGSphere3D" parent="Body" unique_id=1957494993]
+transform = Transform3D(0.5, 0, 0, 0, 0.45, 0, 0, 0, 0.4, 1.65, 0.35, -0.5)
+radial_segments = 24
+rings = 16
+material = SubResource("StandardMaterial3D_fktpw")
+
+[node name="Horn" type="CSGCylinder3D" parent="Body" unique_id=699576146]
+transform = Transform3D(0.90630776, 0.42261827, 0, -0.42261827, 0.90630776, 0, 0, 0, 1, 1.55, 0.78, 0.05)
+radius = 0.06
+height = 0.3
+sides = 12
+cone = true
+material = SubResource("StandardMaterial3D_8weij")
+
+[node name="FrontLegTop" type="CSGCylinder3D" parent="Body" unique_id=749948128]
+transform = Transform3D(0.9659258, 0.25881904, -1.131334e-08, 0, -4.371139e-08, -1, -0.25881904, 0.9659258, -4.222196e-08, 0.8, 0.75, -0.95)
+radius = 0.11
+height = 1.0
+sides = 12
+material = SubResource("StandardMaterial3D_3g710")
+
+[node name="Hoof" type="CSGCylinder3D" parent="Body/FrontLegTop" unique_id=1309608896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 0)
+radius = 0.1
+height = 0.14
+sides = 12
+material = SubResource("StandardMaterial3D_u2xft")
+
+[node name="FrontLegBottom" type="CSGCylinder3D" parent="Body" unique_id=241534339]
+transform = Transform3D(0.9848077, -0.17364818, 7.590403e-09, 0, -4.371139e-08, -1, 0.17364818, 0.9848077, -4.304731e-08, 0.65, 0.2, -0.95)
+radius = 0.11
+height = 1.0
+sides = 12
+material = SubResource("StandardMaterial3D_3g710")
+
+[node name="Hoof" type="CSGCylinder3D" parent="Body/FrontLegBottom" unique_id=1650128738]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 0)
+radius = 0.1
+height = 0.14
+sides = 12
+material = SubResource("StandardMaterial3D_u2xft")
+
+[node name="RearLegTop" type="CSGCylinder3D" parent="Body" unique_id=2060107792]
+transform = Transform3D(0.9396926, -0.34202012, 1.4950174e-08, 0, -4.371139e-08, -1, 0.34202012, 0.9396926, -4.1075268e-08, -0.85, 0.75, -0.95)
+radius = 0.11
+height = 1.0
+sides = 12
+material = SubResource("StandardMaterial3D_3g710")
+
+[node name="Hoof" type="CSGCylinder3D" parent="Body/RearLegTop" unique_id=1904842877]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 0)
+radius = 0.1
+height = 0.14
+sides = 12
+material = SubResource("StandardMaterial3D_u2xft")
+
+[node name="RearLegBottom" type="CSGCylinder3D" parent="Body" unique_id=983443875]
+transform = Transform3D(0.9961947, 0.08715574, -3.8096983e-09, 0, -4.371139e-08, -1, -0.08715574, 0.9961947, -4.3545054e-08, -0.7, 0.2, -0.95)
+radius = 0.11
+height = 1.0
+sides = 12
+material = SubResource("StandardMaterial3D_3g710")
+
+[node name="Hoof" type="CSGCylinder3D" parent="Body/RearLegBottom" unique_id=1022223201]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 0)
+radius = 0.1
+height = 0.14
+sides = 12
+material = SubResource("StandardMaterial3D_u2xft")
+
+[node name="Tail" type="CSGCylinder3D" parent="Body" unique_id=548713032]
+transform = Transform3D(0.34202015, -0.9396926, 0, 0.9396926, 0.34202015, 0, 0, 0, 1, -1.4, 0.6, 0.25)
+radius = 0.04
+height = 0.5
+sides = 12
+material = SubResource("StandardMaterial3D_fktpw")
+
+[node name="Cavity" type="CSGSphere3D" parent="Body" unique_id=1858657233]
+transform = Transform3D(2.25, 0, 0, 0, 0.85, 0, 0, 0, 1.1, 0, 0.58, 0.05)
+visible = false
+operation = 2
+radial_segments = 24
+rings = 16
+material = SubResource("StandardMaterial3D_l36rf")
+
+[node name="Opening" type="CSGBox3D" parent="Body" unique_id=1053953059]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.05, 0.6, -0.65)
+visible = false
+operation = 2
+size = Vector3(1.4, 0.55, 0.6)
+material = SubResource("StandardMaterial3D_l36rf")
+
+[node name="SnowDrift" type="MeshInstance3D" parent="." unique_id=852591687]
+transform = Transform3D(2.2, 0, 0, 0, 0.12, 0, 0, 0, 0.9, 0.1, 1.07, 0.2)
+mesh = SubResource("SphereMesh_pi7k4")
+
+[node name="HidePoint" type="Marker3D" parent="." unique_id=957483911]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0.05)
