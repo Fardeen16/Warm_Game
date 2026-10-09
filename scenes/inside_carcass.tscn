@@ -1,0 +1,54 @@
+[gd_scene format=3]
+
+[sub_resource type="Environment" id="Environment_inside"]
+background_mode = 1
+background_color = Color(0, 0, 0, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.3, 0.06, 0.04, 1)
+ambient_light_energy = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flesh"]
+albedo_color = Color(0.35, 0.04, 0.04, 1)
+roughness = 0.4
+
+[sub_resource type="SphereMesh" id="SphereMesh_cavity"]
+material = SubResource("StandardMaterial3D_flesh")
+flip_faces = true
+
+[node name="InsideCarcass" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_inside")
+
+[node name="Cavity" type="MeshInstance3D" parent="."]
+transform = Transform3D(2.25, 0, 0, 0, 0.85, 0, 0, 0, 1.1, 0, 0, 0)
+mesh = SubResource("SphereMesh_cavity")
+
+[node name="DimLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.1, -0.3)
+light_color = Color(1, 0.55, 0.4, 1)
+light_energy = 0.4
+omni_range = 2.0
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, -0.05, 0.1)
+current = true
+fov = 80.0
+near = 0.02
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Placeholder" type="Label" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -80.0
+offset_right = 200.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Scene 2 - inside the carcass (to be built)"
+horizontal_alignment = 1

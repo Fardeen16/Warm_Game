@@ -5,6 +5,8 @@
 [ext_resource type="Script" uid="uid://uv45gd76ok5q" path="res://scripts/forest.gd" id="3_forest"]
 [ext_resource type="Script" uid="uid://dqghmtka4cjv5" path="res://scripts/map_bounds.gd" id="4_bounds"]
 [ext_resource type="PackedScene" path="res://scenes/props/bison_carcass.tscn" id="5_bison"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="6_hud"]
+[ext_resource type="Script" path="res://scripts/freeze_effect.gd" id="7_freeze"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_night"]
 sky_top_color = Color(0.01, 0.012, 0.025, 1)
@@ -99,6 +101,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.66, 0)
 [node name="Camera3D" type="Camera3D" parent="Player/Head" unique_id=171729902]
 current = true
 
+[node name="InteractRay" type="RayCast3D" parent="Player/Head/Camera3D"]
+
 [node name="BisonCarcass" parent="." unique_id=1037808181 instance=ExtResource("5_bison")]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 1.5, 0, -5)
 
@@ -110,3 +114,11 @@ cloud_glow = 0.6
 cloud_coverage = 0.4
 cloud_scale = 18.0
 world_environment = NodePath("../WorldEnvironment")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("6_hud")
+player = NodePath("../Player")
+
+[node name="FreezeEffect" type="CanvasLayer" parent="."]
+script = ExtResource("7_freeze")
+player = NodePath("../Player")
