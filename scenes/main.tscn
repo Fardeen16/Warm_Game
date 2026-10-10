@@ -28,7 +28,7 @@ tonemap_mode = 3
 glow_enabled = true
 fog_enabled = true
 fog_light_color = Color(0.42, 0.46, 0.53, 1)
-fog_density = 0.0325
+fog_density = 0.0397
 fog_sky_affect = 0.8
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.01
@@ -104,18 +104,18 @@ current = true
 
 [node name="InteractRay" type="RayCast3D" parent="Player/Head/Camera3D" unique_id=1697775168]
 
-[node name="Lantern" parent="Player/Head/Camera3D" instance=ExtResource("8_lantern")]
+[node name="Lantern" parent="Player/Head/Camera3D" unique_id=68159463 instance=ExtResource("8_lantern")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24, -0.34, -0.45)
+light_energy = 1.0
 
 [node name="BisonCarcass" parent="." unique_id=1037808181 instance=ExtResource("5_bison")]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 1.5, 0, -5)
 
 [node name="SnowStorm" type="Node3D" parent="." unique_id=2091973302]
 script = ExtResource("2_storm")
-intensity = 0.9
-storm_speed = 1.6
-max_flakes = 100000
-cloud_density_storm = 0.4
+intensity = 0.99
+storm_speed = 2.5
+cloud_density_storm = 0.69
 cloud_glow = 0.6
 cloud_coverage = 0.4
 cloud_scale = 18.0
