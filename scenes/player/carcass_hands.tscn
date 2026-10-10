@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/demon_bound_hands.gd" id="1_hands"]
+[ext_resource type="PackedScene" path="res://assets/models/psx_arms/arms_rig.glb" id="2_arms"]
+
+[node name="Hands" type="Node3D"]
+script = ExtResource("1_hands")
+
+[node name="Arms" parent="." instance=ExtResource("2_arms")]
+position = Vector3(0, -1.56, 0.03)
+rotation = Vector3(0, 3.14159265, 0)
+scale = Vector3(0.9, 0.9, 0.9)

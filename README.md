@@ -4,8 +4,9 @@
 
 A first-person survival game made in **Godot 4.7**. You are caught out in a blizzard at night.
 The cold is killing you: frost creeps over your vision, the world goes dark and you fight to keep
-your eyes open. Your only chance is the dead bison lying in the snow. Cut it open and crawl inside
-before you freeze.
+your eyes open. The revised concept is a voice promising warmth inside a strange apparent
+carcass. Once inside, you discover it is the living demon that lured you.
+Scene 1 still uses the original bison/cutting prototype; scene 2 explores the new direction.
 
 ## Controls
 | Key | Action |
@@ -29,7 +30,19 @@ editing, so there is no snow in-game until you un-hide it (eye icon next to Snow
 ## Scenes
 - **Scene 1, outside** (`scenes/main.tscn`): the blizzard, freezing to death over 90 seconds,
   cutting open the bison and crawling in.
-- **Scene 2, inside the carcass** (`scenes/inside_carcass.tscn`): placeholder, still to be built.
+- **Scene 2, demon belly** (`scenes/inside_carcass.tscn`): a congested red living
+  chamber. Wrist tethers and torso bands pin the survivor beneath close tissue folds.
+  The interior has no lantern; pulsing flesh light and the heartbeat provide atmosphere.
+  Hold **LMB** to grasp with the right hand, **RMB** with the left, then press **E** to
+  yank. **WASD** struggles in place; mouse look is limited by the restrained posture.
+  The bands stretch and recoil. An escape condition has not been implemented.
+
+Open `scenes/inside_carcass.tscn` and press **F6** to preview scene 2.
+Active controllers: `scripts/demon_belly.gd` and `scripts/demon_bound_hands.gd`.
+
+See [creative direction](docs/creative_direction.md) for the decisions shared across collaborators.
+See [archived animal research](docs/animal_reference.md) for the earlier scale and warmth assumptions,
+and [third-party credits](assets/THIRD_PARTY.md) for asset provenance and license notes.
 
 ## Project layout
 ```

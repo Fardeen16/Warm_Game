@@ -1,54 +1,123 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://scripts/demon_belly.gd" id="1_interior"]
+[ext_resource type="PackedScene" path="res://scenes/player/carcass_hands.tscn" id="2_hands"]
+
 [sub_resource type="Environment" id="Environment_inside"]
 background_mode = 1
-background_color = Color(0, 0, 0, 1)
+background_color = Color(0.008, 0.011, 0.018, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.3, 0.06, 0.04, 1)
-ambient_light_energy = 0.3
+ambient_light_color = Color(0.42, 0.035, 0.05, 1)
+ambient_light_energy = 0.14
+tonemap_mode = 2
+ssao_enabled = true
+ssao_radius = 0.075
+ssao_intensity = 1.5
+glow_enabled = true
+glow_intensity = 0.08
+fog_enabled = true
+fog_light_color = Color(0.16, 0.015, 0.025, 1)
+fog_light_energy = 0.2
+fog_density = 0.01
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flesh"]
-albedo_color = Color(0.35, 0.04, 0.04, 1)
-roughness = 0.4
-
-[sub_resource type="SphereMesh" id="SphereMesh_cavity"]
-material = SubResource("StandardMaterial3D_flesh")
-flip_faces = true
+[sub_resource type="CapsuleShape3D" id="CrawlCapsule"]
+radius = 0.125
+height = 0.27
 
 [node name="InsideCarcass" type="Node3D"]
+script = ExtResource("1_interior")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_inside")
 
-[node name="Cavity" type="MeshInstance3D" parent="."]
-transform = Transform3D(2.25, 0, 0, 0, 0.85, 0, 0, 0, 1.1, 0, 0, 0)
-mesh = SubResource("SphereMesh_cavity")
+[node name="Interior" type="Node3D" parent="."]
 
-[node name="DimLight" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.1, -0.3)
-light_color = Color(1, 0.55, 0.4, 1)
-light_energy = 0.4
-omni_range = 2.0
+[node name="View" type="CharacterBody3D" parent="."]
+position = Vector3(0, -0.18, 0.34)
+floor_snap_length = 0.035
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, -0.05, 0.1)
+[node name="CrawlShape" type="CollisionShape3D" parent="View"]
+shape = SubResource("CrawlCapsule")
+
+[node name="Camera3D" type="Camera3D" parent="View"]
 current = true
-fov = 80.0
-near = 0.02
+position = Vector3(0, 0.115, 0)
+rotation = Vector3(-0.10, 0, 0)
+fov = 65.0
+near = 0.015
+far = 20.0
+
+[node name="Hands" parent="View" instance=ExtResource("2_hands")]
+position = Vector3(0, 0.115, 0)
+
+[node name="ColdOpeningLight" type="OmniLight3D" parent="."]
+position = Vector3(0.40, -0.06, 0.42)
+light_color = Color(0.48, 0.67, 1, 1)
+light_energy = 0.09
+shadow_enabled = true
+omni_range = 0.65
+omni_attenuation = 1.7
+
+[node name="FleshGlow" type="OmniLight3D" parent="."]
+position = Vector3(0.02, 0.15, -0.28)
+light_color = Color(1, 0.045, 0.075, 1)
+light_energy = 0.24
+light_specular = 0.25
+omni_range = 1.2
+omni_attenuation = 1.5
+
+[node name="RearFleshGlow" type="OmniLight3D" parent="."]
+position = Vector3(-0.12, 0.1, 0.62)
+light_color = Color(1, 0.08, 0.10, 1)
+light_energy = 0.12
+light_specular = 0.2
+omni_range = 1.1
+omni_attenuation = 1.7
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="Placeholder" type="Label" parent="UI"]
+[node name="AtmosphereOverlay" type="ColorRect" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 1)
+
+[node name="LookHint" type="Label" parent="UI"]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -200.0
-offset_top = -80.0
-offset_right = 200.0
-offset_bottom = -40.0
+offset_left = -390.0
+offset_top = -40.0
+offset_right = 390.0
+offset_bottom = -20.0
 grow_horizontal = 2
 grow_vertical = 0
-text = "Scene 2 - inside the carcass (to be built)"
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.72, 0.66, 0.58, 0.75)
+theme_override_font_sizes/font_size = 13
+text = "Hold LMB / RMB: grasp   ·   E: yank   ·   WASD: struggle   ·   Mouse: look"
+horizontal_alignment = 1
+
+[node name="Whisper" type="Label" parent="UI"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -350.0
+offset_top = -90.0
+offset_right = 350.0
+offset_bottom = -55.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.88, 0.77, 0.65, 1)
+theme_override_colors/font_shadow_color = Color(0.015, 0.003, 0.01, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 19
 horizontal_alignment = 1
