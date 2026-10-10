@@ -1,0 +1,64 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/hands.gd" id="1_hands"]
+[ext_resource type="PackedScene" path="res://scenes/props/lantern.tscn" id="2_lantern"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glove"]
+albedo_color = Color(0.24, 0.17, 0.11, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_hand"]
+material = SubResource("StandardMaterial3D_glove")
+size = Vector3(0.07, 0.06, 0.14)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_grip"]
+albedo_color = Color(0.2, 0.12, 0.07, 1)
+roughness = 0.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_grip"]
+material = SubResource("StandardMaterial3D_grip")
+size = Vector3(0.022, 0.026, 0.09)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_steel"]
+albedo_color = Color(0.7, 0.72, 0.75, 1)
+metallic = 0.9
+roughness = 0.25
+
+[sub_resource type="BoxMesh" id="BoxMesh_blade"]
+material = SubResource("StandardMaterial3D_steel")
+size = Vector3(0.005, 0.024, 0.11)
+
+[node name="Hands" type="Node3D"]
+script = ExtResource("1_hands")
+
+[node name="RightHand" type="Node3D" parent="."]
+position = Vector3(0.26, -0.1, -0.45)
+
+[node name="Model" type="MeshInstance3D" parent="RightHand"]
+cast_shadow = 0
+mesh = SubResource("BoxMesh_hand")
+
+[node name="Lantern" parent="RightHand" instance=ExtResource("2_lantern")]
+position = Vector3(0, -0.26, 0)
+light_energy = 1.0
+
+[node name="LeftHand" type="Node3D" parent="."]
+position = Vector3(-0.26, -0.24, -0.42)
+rotation_degrees = Vector3(0, -8, 0)
+
+[node name="Model" type="MeshInstance3D" parent="LeftHand"]
+cast_shadow = 0
+mesh = SubResource("BoxMesh_hand")
+
+[node name="Knife" type="Node3D" parent="LeftHand"]
+position = Vector3(0, 0, -0.07)
+
+[node name="Grip" type="MeshInstance3D" parent="LeftHand/Knife"]
+position = Vector3(0, 0, -0.02)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_grip")
+
+[node name="Blade" type="MeshInstance3D" parent="LeftHand/Knife"]
+position = Vector3(0, 0.002, -0.12)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_blade")
