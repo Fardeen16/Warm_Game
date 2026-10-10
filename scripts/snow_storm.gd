@@ -6,10 +6,14 @@ extends Node3D
 ## Every value can be tweaked live in the inspector, in the editor or while the game runs.
 
 const CLOUD_SHADER := preload("res://shaders/snow_clouds.gdshader")
+const FLAKE_SHADER := preload("res://shaders/snowflake.gdshader")
 
 @export_group("Storm")
 ## 0 = light flurry, 1 = full blizzard. Scales flakes, wind, haze and clouds together.
 @export_range(0.0, 1.0, 0.01) var intensity: float = 0.75
+## Speeds up the whole storm: falling snow, wind and drifting clouds. 1 = normal.
+## Changing it restarts the snowfall.
+@export_range(0.25, 4.0, 0.05) var storm_speed: float = 1.0
 ## Total number of flakes at full intensity. Changing this restarts the snowfall.
 @export_range(1000, 150000, 1000) var max_flakes: int = 100000
 ## Downward speed of medium flakes (m/s). Small flakes fall a bit faster, large ones slower.
@@ -21,6 +25,9 @@ const CLOUD_SHADER := preload("res://shaders/snow_clouds.gdshader")
 @export_range(0.005, 0.3, 0.005) var small_size: float = 0.025
 @export_range(0.005, 0.3, 0.005) var medium_size: float = 0.05
 @export_range(0.005, 0.5, 0.005) var large_size: float = 0.1
+## Flake length relative to its width. Above 1 makes oval flakes stretched along the
+## direction they fly, which reads as faster, harsher snow.
+@export_range(1.0, 6.0, 0.05) var flake_stretch: float = 2.2
 ## How common each class is, relative to the others.
 @export_range(0.0, 1.0, 0.01) var small_share: float = 0.6
 @export_range(0.0, 1.0, 0.01) var medium_share: float = 0.3
@@ -82,7 +89,7 @@ const CLOUD_SHADER := preload("res://shaders/snow_clouds.gdshader")
 const SIZE_FALL_MULT: Array[float] = [1.15, 1.0, 0.75]
 
 var _layers: Array[Dictionary] = []
-var _draw_mat: StandardMaterial3D
+var _draw_mat: ShaderMaterial
 var _cloud_volume: FogVolume
 var _cloud_mat: ShaderMaterial
 var _cloud_offset := Vector3.ZERO
@@ -127,17 +134,17 @@ func _build_draw_material() -> void:
 	flake_tex.width = 32
 	flake_tex.height = 32
 
-	_draw_mat = StandardMaterial3D.new()
-	_draw_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	_draw_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	_draw_mat.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
-	_draw_mat.albedo_texture = flake_tex
+	# Faces the camera with each flake's long side along its velocity (align_y below).
+	_draw_mat = ShaderMaterial.new()
+	_draw_mat.shader = FLAKE_SHADER
+	_draw_mat.set_shader_parameter("flake_tex", flake_tex)
 
 
 func _build_layer(size_class: int) -> Dictionary:
 	var process_mat := ParticleProcessMaterial.new()
 	process_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
 	process_mat.gravity = Vector3.ZERO
+	process_mat.particle_flag_align_y = true
 	process_mat.scale_min = 0.8
 	process_mat.scale_max = 1.2
 
@@ -214,7 +221,7 @@ func _update_storm(delta: float) -> void:
 	_time += delta
 
 	_update_wind_angle(delta)
-	var base_wind := Vector3(cos(_wind_angle), 0.0, sin(_wind_angle)) * wind_strength * intensity
+	var base_wind := Vector3(cos(_wind_angle), 0.0, sin(_wind_angle)) * wind_strength * intensity * storm_speed
 	var gust := 1.0 + gustiness * _gust_noise.get_noise_1d(_time * gust_frequency)
 	var sizes: Array[float] = [small_size, medium_size, large_size]
 	var size_shares: Array[float] = [small_share, medium_share, large_share]
@@ -227,7 +234,7 @@ func _update_storm(delta: float) -> void:
 
 		var share := size_shares[size_class] / size_total if size_total > 0.0 else 0.0
 		var amount := int(max_flakes * share)
-		var fall := fall_speed * SIZE_FALL_MULT[size_class]
+		var fall := fall_speed * SIZE_FALL_MULT[size_class] * storm_speed
 		var lifetime := area_height / fall
 		var flake_velocity := base_wind * gust + Vector3.DOWN * fall
 
@@ -246,12 +253,12 @@ func _update_storm(delta: float) -> void:
 		process_mat.initial_velocity_min = speed * 0.85
 		process_mat.initial_velocity_max = speed * 1.15
 		process_mat.emission_box_extents = Vector3(area_size * 0.5, 0.5, area_size * 0.5)
-		(layer.quad as QuadMesh).size = Vector2.ONE * sizes[size_class]
+		(layer.quad as QuadMesh).size = Vector2(1.0, flake_stretch) * sizes[size_class]
 
 		# Spawn upwind and above the area so the flakes land across it.
 		particles.global_position = global_position + Vector3.UP * area_height - base_wind * lifetime
 
-	_draw_mat.albedo_color = snow_color
+	_draw_mat.set_shader_parameter("color", snow_color)
 
 	_cloud_volume.visible = clouds_enabled
 	_cloud_volume.size = Vector3(area_size * 2.0, cloud_height, area_size * 2.0)

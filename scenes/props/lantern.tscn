@@ -1,0 +1,88 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/lantern.gd" id="1_lantern"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_metal"]
+albedo_color = Color(0.13, 0.11, 0.09, 1)
+metallic = 0.8
+roughness = 0.45
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glass"]
+transparency = 1
+albedo_color = Color(1, 0.82, 0.55, 0.55)
+roughness = 0.1
+emission_enabled = true
+emission = Color(1, 0.6, 0.25, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flame"]
+shading_mode = 0
+albedo_color = Color(1, 0.85, 0.5, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_base"]
+material = SubResource("StandardMaterial3D_metal")
+top_radius = 0.06
+bottom_radius = 0.065
+height = 0.03
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_glass"]
+material = SubResource("StandardMaterial3D_glass")
+top_radius = 0.05
+bottom_radius = 0.05
+height = 0.12
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_cap"]
+material = SubResource("StandardMaterial3D_metal")
+top_radius = 0.015
+bottom_radius = 0.065
+height = 0.05
+
+[sub_resource type="TorusMesh" id="TorusMesh_handle"]
+material = SubResource("StandardMaterial3D_metal")
+inner_radius = 0.04
+outer_radius = 0.048
+
+[sub_resource type="SphereMesh" id="SphereMesh_flame"]
+material = SubResource("StandardMaterial3D_flame")
+radius = 0.012
+height = 0.04
+
+[node name="Lantern" type="Node3D" node_paths=PackedStringArray("flame")]
+script = ExtResource("1_lantern")
+glow_material = SubResource("StandardMaterial3D_glass")
+flame = NodePath("Model/Flame")
+
+[node name="Model" type="Node3D" parent="."]
+
+[node name="Base" type="MeshInstance3D" parent="Model"]
+position = Vector3(0, 0.015, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_base")
+
+[node name="Glass" type="MeshInstance3D" parent="Model"]
+position = Vector3(0, 0.09, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_glass")
+
+[node name="Flame" type="MeshInstance3D" parent="Model"]
+position = Vector3(0, 0.07, 0)
+cast_shadow = 0
+mesh = SubResource("SphereMesh_flame")
+
+[node name="Cap" type="MeshInstance3D" parent="Model"]
+position = Vector3(0, 0.175, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_cap")
+
+[node name="Handle" type="MeshInstance3D" parent="Model"]
+position = Vector3(0, 0.215, 0)
+rotation_degrees = Vector3(90, 0, 0)
+cast_shadow = 0
+mesh = SubResource("TorusMesh_handle")
+
+[node name="Light" type="OmniLight3D" parent="."]
+position = Vector3(0, 0.09, 0)
+light_color = Color(1, 0.68, 0.38, 1)
+light_energy = 1.6
+shadow_enabled = true
+omni_range = 9.0

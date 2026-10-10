@@ -39,6 +39,7 @@ var _dead := false
 
 
 func _ready() -> void:
+	add_to_group("freeze_effect")
 	layer = 10
 	_build_overlay()
 	_build_death_screen()
@@ -69,6 +70,10 @@ func _process(delta: float) -> void:
 	_material.set_shader_parameter("frost", frost)
 	_material.set_shader_parameter("darkness", darkness)
 	_material.set_shader_parameter("eyelids", eyelids)
+
+
+func is_dead() -> bool:
+	return _dead
 
 
 func _unhandled_input(event: InputEvent) -> void:

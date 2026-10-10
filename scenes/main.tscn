@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/props/bison_carcass.tscn" id="5_bison"]
 [ext_resource type="Script" uid="uid://bw6laqe38j5ho" path="res://scripts/hud.gd" id="6_hud"]
 [ext_resource type="Script" uid="uid://bc4g6fchxq11o" path="res://scripts/freeze_effect.gd" id="7_freeze"]
+[ext_resource type="PackedScene" path="res://scenes/props/lantern.tscn" id="8_lantern"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_night"]
 sky_top_color = Color(0.01, 0.012, 0.025, 1)
@@ -103,13 +104,17 @@ current = true
 
 [node name="InteractRay" type="RayCast3D" parent="Player/Head/Camera3D" unique_id=1697775168]
 
+[node name="Lantern" parent="Player/Head/Camera3D" instance=ExtResource("8_lantern")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24, -0.34, -0.45)
+
 [node name="BisonCarcass" parent="." unique_id=1037808181 instance=ExtResource("5_bison")]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 1.5, 0, -5)
 
 [node name="SnowStorm" type="Node3D" parent="." unique_id=2091973302]
-visible = false
 script = ExtResource("2_storm")
-max_flakes = 60000
+intensity = 0.9
+storm_speed = 1.6
+max_flakes = 100000
 cloud_density_storm = 0.4
 cloud_glow = 0.6
 cloud_coverage = 0.4
