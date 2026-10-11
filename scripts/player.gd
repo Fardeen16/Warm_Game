@@ -17,6 +17,9 @@ signal entering_shelter(duration: float)
 @export var mouse_sensitivity: float = 0.002
 ## How far away you can interact with things (m).
 @export var reach: float = 3.0
+## How far you can look down and up (degrees).
+@export_range(0.0, 89.0, 1.0) var max_look_down: float = 60.0
+@export_range(0.0, 89.0, 1.0) var max_look_up: float = 80.0
 ## Eye height when kneeling (m).
 @export var kneel_height: float = 0.95
 
@@ -47,7 +50,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if controls_enabled and _kneel_target == null:
 			rotate_y(-event.relative.x * mouse_sensitivity)
 			head.rotate_x(-event.relative.y * mouse_sensitivity)
-			head.rotation.x = clampf(head.rotation.x, deg_to_rad(-89.0), deg_to_rad(89.0))
+			head.rotation.x = clampf(head.rotation.x, deg_to_rad(-max_look_down), deg_to_rad(max_look_up))
 	elif event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	elif event is InputEventMouseButton and event.pressed:

@@ -30,7 +30,6 @@ fog_enabled = true
 fog_light_color = Color(0.42, 0.46, 0.53, 1)
 fog_density = 0.0397
 fog_sky_affect = 0.8
-volumetric_fog_enabled = true
 volumetric_fog_density = 0.01
 volumetric_fog_emission = Color(0.35, 0.38, 0.45, 1)
 volumetric_fog_emission_energy = 0.4
@@ -104,7 +103,7 @@ current = true
 
 [node name="InteractRay" type="RayCast3D" parent="Player/Head/Camera3D" unique_id=1697775168]
 
-[node name="Hands" parent="Player/Head/Camera3D" instance=ExtResource("8_hands")]
+[node name="Hands" parent="Player/Head/Camera3D" unique_id=852013023 instance=ExtResource("8_hands")]
 
 [node name="BisonCarcass" parent="." unique_id=1037808181 instance=ExtResource("5_bison")]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 1.5, 0, -5)
@@ -113,6 +112,7 @@ transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 1.5, 0, -5
 script = ExtResource("2_storm")
 intensity = 0.99
 storm_speed = 2.5
+clouds_enabled = false
 cloud_density_storm = 0.69
 cloud_glow = 0.6
 cloud_coverage = 0.4

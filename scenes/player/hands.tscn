@@ -28,6 +28,14 @@ roughness = 0.25
 material = SubResource("StandardMaterial3D_steel")
 size = Vector3(0.005, 0.024, 0.11)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sleeve"]
+albedo_color = Color(0.16, 0.18, 0.2, 1)
+roughness = 0.95
+
+[sub_resource type="BoxMesh" id="BoxMesh_arm"]
+material = SubResource("StandardMaterial3D_sleeve")
+size = Vector3(0.06, 0.06, 1)
+
 [node name="Hands" type="Node3D"]
 script = ExtResource("1_hands")
 
@@ -43,8 +51,9 @@ position = Vector3(0, -0.26, 0)
 light_energy = 1.0
 
 [node name="LeftHand" type="Node3D" parent="."]
-position = Vector3(-0.26, -0.24, -0.42)
-rotation_degrees = Vector3(0, -8, 0)
+visible = false
+position = Vector3(-0.22, -0.45, -0.3)
+rotation_degrees = Vector3(-20, -8, 0)
 
 [node name="Model" type="MeshInstance3D" parent="LeftHand"]
 cast_shadow = 0
@@ -62,3 +71,12 @@ mesh = SubResource("BoxMesh_grip")
 position = Vector3(0, 0.002, -0.12)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_blade")
+
+[node name="RightArm" type="MeshInstance3D" parent="."]
+cast_shadow = 0
+mesh = SubResource("BoxMesh_arm")
+
+[node name="LeftArm" type="MeshInstance3D" parent="."]
+visible = false
+cast_shadow = 0
+mesh = SubResource("BoxMesh_arm")
