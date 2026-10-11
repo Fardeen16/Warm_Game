@@ -63,11 +63,17 @@ func _regenerate() -> void:
 
 	var rng := RandomNumberGenerator.new()
 	rng.seed = random_seed
+	# Stand the trees on the snow if there is uneven terrain.
+	var terrain := get_tree().get_first_node_in_group("snow_terrain") if is_inside_tree() else null
 	for i in tree_count:
 		var angle := rng.randf() * TAU
 		var dist := sqrt(rng.randf_range(inner_radius * inner_radius, outer_radius * outer_radius))
 		var tree := StaticBody3D.new()
 		tree.position = Vector3(cos(angle) * dist, 0.0, sin(angle) * dist)
+		if terrain:
+			# Sink a little so the trunk doesn't hover on a slope.
+			var world := to_global(tree.position)
+			tree.position.y = to_local(Vector3(world.x, terrain.get_height(world.x, world.z), world.z)).y - 0.15
 		tree.rotation.y = rng.randf() * TAU
 		tree.scale = Vector3.ONE * rng.randf_range(0.7, 1.6)
 		_container.add_child(tree)

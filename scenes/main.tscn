@@ -8,6 +8,8 @@
 [ext_resource type="Script" uid="uid://bw6laqe38j5ho" path="res://scripts/hud.gd" id="6_hud"]
 [ext_resource type="Script" uid="uid://bc4g6fchxq11o" path="res://scripts/freeze_effect.gd" id="7_freeze"]
 [ext_resource type="PackedScene" path="res://scenes/player/hands.tscn" id="8_hands"]
+[ext_resource type="Script" path="res://scripts/snow_terrain.gd" id="9_terrain"]
+[ext_resource type="Script" path="res://scripts/footprints.gd" id="10_footprints"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_night"]
 sky_top_color = Color(0.01, 0.012, 0.025, 1)
@@ -36,15 +38,25 @@ volumetric_fog_emission_energy = 0.4
 volumetric_fog_length = 80.0
 volumetric_fog_ambient_inject = 1.0
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_snow"]
+frequency = 0.03
+fractal_octaves = 4
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_snow"]
+width = 256
+height = 256
+seamless = true
+as_normal_map = true
+bump_strength = 3.0
+noise = SubResource("FastNoiseLite_snow")
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_snow"]
-albedo_color = Color(0.62, 0.64, 0.68, 1)
-roughness = 0.95
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
-material = SubResource("StandardMaterial3D_snow")
-size = Vector2(400, 400)
-
-[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ground"]
+albedo_color = Color(0.7, 0.73, 0.79, 1)
+roughness = 0.85
+normal_enabled = true
+normal_scale = 0.6
+normal_texture = SubResource("NoiseTexture2D_snow")
+uv1_scale = Vector3(0.35, 0.35, 0.35)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 radius = 0.3
@@ -71,12 +83,9 @@ shadow_enabled = true
 sky_mode = 1
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=329331001]
-
-[node name="Mesh" type="MeshInstance3D" parent="Ground" unique_id=1758725312]
-mesh = SubResource("PlaneMesh_ground")
-
-[node name="Collision" type="CollisionShape3D" parent="Ground" unique_id=1761005610]
-shape = SubResource("WorldBoundaryShape3D_ground")
+script = ExtResource("9_terrain")
+flatten_around = Array[NodePath]([NodePath("../BisonCarcass"), NodePath("../Player")])
+material = SubResource("StandardMaterial3D_snow")
 
 [node name="MapBounds" type="Node3D" parent="." unique_id=1203155874]
 script = ExtResource("4_bounds")
@@ -94,6 +103,9 @@ shape = SubResource("CapsuleShape3D_player")
 [node name="Body" type="MeshInstance3D" parent="Player" unique_id=1076589425]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
 mesh = SubResource("CapsuleMesh_player")
+
+[node name="Footprints" type="Node3D" parent="Player"]
+script = ExtResource("10_footprints")
 
 [node name="Head" type="Node3D" parent="Player" unique_id=600899108]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.66, 0)
