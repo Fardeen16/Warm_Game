@@ -130,13 +130,13 @@ position = Vector3(0, -0.11, -0.3)
 rotation_degrees = Vector3(30, 0, 0)
 
 [node name="LeftHand" type="MeshInstance3D" parent="Camera3D"]
-position = Vector3(-0.1, -0.13, -0.29)
+position = Vector3(-0.068, -0.14, -0.29)
 rotation_degrees = Vector3(30, 0, 0)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_hand")
 
 [node name="RightHand" type="MeshInstance3D" parent="Camera3D"]
-position = Vector3(0.1, -0.13, -0.29)
+position = Vector3(0.068, -0.14, -0.29)
 rotation_degrees = Vector3(30, 0, 0)
 cast_shadow = 0
 mesh = SubResource("BoxMesh_hand")

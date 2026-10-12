@@ -1,0 +1,4 @@
+Walkie-Talkie (CC0) by VerzatileDev
+https://verzatiledev.itch.io/walkie-talkie
+License: CC0 - public domain, no credit required.
+Split into body and two dials (pivoted at their base) for the radio mini-game.

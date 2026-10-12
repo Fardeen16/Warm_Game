@@ -1,118 +1,83 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/radio.gd" id="1_radio"]
+[ext_resource type="Mesh" path="res://assets/models/props/radio/walkie_body.obj" id="2_body"]
+[ext_resource type="Mesh" path="res://assets/models/props/radio/walkie_knob_big.obj" id="3_knob_big"]
+[ext_resource type="Mesh" path="res://assets/models/props/radio/walkie_knob_small.obj" id="4_knob_small"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_body"]
-albedo_color = Color(0.16, 0.18, 0.14, 1)
-roughness = 0.7
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dark"]
-albedo_color = Color(0.05, 0.05, 0.05, 1)
-metallic = 0.5
-roughness = 0.5
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_window"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_screen"]
 albedo_color = Color(1, 0.6, 0.25, 1)
 emission_enabled = true
 emission = Color(1, 0.55, 0.2, 1)
 emission_energy_multiplier = 0.3
 
-[sub_resource type="BoxMesh" id="BoxMesh_body"]
-material = SubResource("StandardMaterial3D_body")
-size = Vector3(0.16, 0.2, 0.06)
-
-[sub_resource type="BoxMesh" id="BoxMesh_grille"]
-material = SubResource("StandardMaterial3D_dark")
-size = Vector3(0.12, 0.08, 0.004)
-
-[sub_resource type="BoxMesh" id="BoxMesh_window"]
-material = SubResource("StandardMaterial3D_window")
-size = Vector3(0.12, 0.03, 0.004)
+[sub_resource type="BoxMesh" id="BoxMesh_screen"]
+material = SubResource("StandardMaterial3D_screen")
+size = Vector3(0.7, 0.28, 0.02)
 
 [sub_resource type="SphereMesh" id="SphereMesh_led"]
-radius = 0.006
-height = 0.012
+radius = 0.05
+height = 0.1
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_knob"]
-material = SubResource("StandardMaterial3D_dark")
-top_radius = 0.016
-bottom_radius = 0.017
-height = 0.022
+[sub_resource type="BoxMesh" id="BoxMesh_pointer_big"]
+size = Vector3(0.07, 0.04, 0.17)
 
-[sub_resource type="BoxMesh" id="BoxMesh_pointer"]
-size = Vector3(0.004, 0.004, 0.012)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_antenna"]
-material = SubResource("StandardMaterial3D_dark")
-top_radius = 0.003
-bottom_radius = 0.005
-height = 0.22
+[sub_resource type="BoxMesh" id="BoxMesh_pointer_small"]
+size = Vector3(0.06, 0.04, 0.12)
 
 [node name="Radio" type="Node3D"]
 script = ExtResource("1_radio")
 
 [node name="Model" type="Node3D" parent="."]
+scale = Vector3(0.08, 0.08, 0.08)
 
 [node name="Body" type="MeshInstance3D" parent="Model"]
 cast_shadow = 0
-mesh = SubResource("BoxMesh_body")
+mesh = ExtResource("2_body")
 
-[node name="Grille" type="MeshInstance3D" parent="Model"]
-position = Vector3(0, -0.04, 0.031)
+[node name="Screen" type="MeshInstance3D" parent="Model"]
+position = Vector3(0, 0.75, 0.28)
 cast_shadow = 0
-mesh = SubResource("BoxMesh_grille")
-
-[node name="Window" type="MeshInstance3D" parent="Model"]
-position = Vector3(0, 0.055, 0.031)
-cast_shadow = 0
-mesh = SubResource("BoxMesh_window")
+mesh = SubResource("BoxMesh_screen")
 
 [node name="Led" type="MeshInstance3D" parent="Model"]
-position = Vector3(0.062, 0.084, 0.031)
+position = Vector3(0.45, 1.1, 0.28)
 cast_shadow = 0
 mesh = SubResource("SphereMesh_led")
 
-[node name="Antenna" type="MeshInstance3D" parent="Model"]
-position = Vector3(0, 0.2, -0.022)
-rotation_degrees = Vector3(-12, 0, 0)
-cast_shadow = 0
-mesh = SubResource("CylinderMesh_antenna")
-
 [node name="KnobLeft" type="Node3D" parent="Model"]
-position = Vector3(-0.045, 0.1, 0)
+position = Vector3(0.0651, 1.233, -0.0152)
 
 [node name="Mesh" type="MeshInstance3D" parent="Model/KnobLeft"]
-position = Vector3(0, 0.011, 0)
 cast_shadow = 0
-mesh = SubResource("CylinderMesh_knob")
+mesh = ExtResource("3_knob_big")
 
 [node name="Pointer" type="MeshInstance3D" parent="Model/KnobLeft"]
-position = Vector3(0, 0.023, 0.008)
+position = Vector3(0, 0.275, 0.08)
 cast_shadow = 0
-mesh = SubResource("BoxMesh_pointer")
+mesh = SubResource("BoxMesh_pointer_big")
 
 [node name="KnobRight" type="Node3D" parent="Model"]
-position = Vector3(0.045, 0.1, 0)
+position = Vector3(0.3984, 1.233, -0.0103)
 
 [node name="Mesh" type="MeshInstance3D" parent="Model/KnobRight"]
-position = Vector3(0, 0.011, 0)
 cast_shadow = 0
-mesh = SubResource("CylinderMesh_knob")
+mesh = ExtResource("4_knob_small")
 
 [node name="Pointer" type="MeshInstance3D" parent="Model/KnobRight"]
-position = Vector3(0, 0.023, 0.008)
+position = Vector3(0, 0.204, 0.055)
 cast_shadow = 0
-mesh = SubResource("BoxMesh_pointer")
+mesh = SubResource("BoxMesh_pointer_small")
 
 [node name="DialGlow" type="OmniLight3D" parent="."]
-position = Vector3(0, 0.055, 0.07)
+position = Vector3(0, 0.06, 0.07)
 light_color = Color(1, 0.6, 0.3, 1)
 light_energy = 0.25
 omni_range = 0.9
 
 [node name="LedLight" type="OmniLight3D" parent="."]
 visible = false
-position = Vector3(0.062, 0.084, 0.06)
+position = Vector3(0.036, 0.088, 0.06)
 light_color = Color(0.3, 1, 0.4, 1)
 light_energy = 0.8
 omni_range = 0.7

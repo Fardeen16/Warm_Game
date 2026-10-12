@@ -148,11 +148,13 @@ func _lock(index: int) -> void:
 	_hold = 0.0
 	_sfx.stream = lock_sound
 	_sfx.play()
-	knob_locked.emit(index)
+	# Move on before announcing the lock, so listeners see the new state.
 	if index == 0:
 		_active = 1
 	else:
 		_is_solved = true
+	knob_locked.emit(index)
+	if _is_solved:
 		await get_tree().create_timer(0.5).timeout
 		_sfx.stream = solved_sound
 		_sfx.play()
