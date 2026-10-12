@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://scripts/fp_arms.gd" id="3_arms"]
 [ext_resource type="PackedScene" path="res://assets/models/characters/player/arms/arms_rig.glb" id="4_rig"]
 [ext_resource type="Script" path="res://scripts/hand_grip.gd" id="5_grip"]
+[ext_resource type="Script" path="res://scripts/captions.gd" id="6_captions"]
 
 [sub_resource type="Environment" id="Environment_inside"]
 background_mode = 1
@@ -130,3 +131,6 @@ thumb_curl = 20.0
 
 [node name="Ambience" type="AudioStreamPlayer" parent="."]
 volume_db = -14.0
+
+[node name="Captions" type="CanvasLayer" parent="."]
+script = ExtResource("6_captions")

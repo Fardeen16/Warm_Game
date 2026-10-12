@@ -1,10 +1,16 @@
 extends Node3D
-## Scene 2: hiding inside the carcass in the dark. You're bleeding out: within time_limit
-## seconds the screen fills with blood and you die, unless you tune the radio first. Once the
-## radio is tuned, the call comes through and you crawl out to the next scene.
+## Scene 2: hiding inside the carcass in the dark. After a few lines of thought (captions), you
+## start bleeding out: within time_limit seconds the screen fills with blood and you die, unless
+## you tune the radio first. Once the radio is tuned, the call comes through and you crawl out to
+## the next scene.
 
 @export_range(10.0, 600.0, 1.0) var time_limit: float = 90.0
 @export_file("*.tscn") var next_scene: String = "res://scenes/rescue.tscn"
+## What the player says on getting inside, before the radio and the clock start.
+@export var intro_lines: PackedStringArray = [
+	"Okay... finally, a little warm.",
+	"I need to quickly get my radio tuned in so I can call for help.",
+]
 ## How far you can look around while lying here (degrees left/right, up/down).
 @export var look_range: Vector2 = Vector2(6.0, 4.0)
 @export var mouse_sensitivity: float = 0.002
@@ -20,9 +26,12 @@ const OVERLAY_SHADER := preload("res://shaders/belly_overlay.gdshader")
 @onready var _radio: Radio = $Camera3D/Radio
 @onready var _arms: FPArms = $Camera3D/Arms
 @onready var _ambience: AudioStreamPlayer = $Ambience
+@onready var _captions: Captions = $Captions
 
 var _elapsed := 0.0
 var _dead := false
+# The radio and the bleeding start after the intro captions.
+var _started := false
 var _leaving := false
 var _rest_rotation: Vector3
 var _rest_position: Vector3
@@ -45,14 +54,21 @@ func _ready() -> void:
 	_build_ui()
 	_radio.knob_locked.connect(func(_i: int) -> void: _update_hint())
 	_radio.solved.connect(_on_radio_solved)
+	_radio.enabled = false
 	_update_hint()
 	_start_ambience()
-	# Fade in from the black of crawling inside.
-	create_tween().tween_property(_fade, "modulate:a", 0.0, 2.0)
+	# Fade in from the black of crawling inside, then think out loud before getting to work.
+	var fade_in := create_tween()
+	fade_in.tween_property(_fade, "modulate:a", 0.0, 2.0)
+	await fade_in.finished
+	await _captions.say(intro_lines)
+	_started = true
+	_radio.enabled = true
+	_update_hint()
 
 
 func _process(delta: float) -> void:
-	if not _dead and not _radio.is_solved():
+	if _started and not _dead and not _radio.is_solved():
 		_elapsed += delta
 		if _elapsed >= time_limit:
 			_die()
@@ -97,7 +113,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _update_hint() -> void:
-	if _radio.is_solved():
+	if not _started or _radio.is_solved():
 		_hint.text = ""
 	elif _radio.get_active_knob() == 0:
 		_hint.text = "Tune the left knob    A / D  or  scroll"

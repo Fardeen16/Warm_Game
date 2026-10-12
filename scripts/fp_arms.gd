@@ -20,6 +20,10 @@ func _ready() -> void:
 	animation_player = find_child("AnimationPlayer", true, false)
 	skeleton = find_child("Skeleton3D", true, false)
 
+	# Your own arms shouldn't throw shadows from the lantern or the moon.
+	for mesh: MeshInstance3D in find_children("*", "MeshInstance3D", true, false):
+		mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+
 	if gloves:
 		for mesh: MeshInstance3D in find_children("*", "MeshInstance3D", true, false):
 			if mesh.get_parent() != skeleton:
