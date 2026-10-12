@@ -2,7 +2,8 @@
 
 [ext_resource type="Script" path="res://scripts/inside_belly.gd" id="1_belly"]
 [ext_resource type="PackedScene" path="res://scenes/props/radio.tscn" id="2_radio"]
-[ext_resource type="Script" path="res://scripts/arm.gd" id="3_arm"]
+[ext_resource type="Script" path="res://scripts/fp_arms.gd" id="3_arms"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/player/arms/arms_rig.glb" id="4_rig"]
 
 [sub_resource type="Environment" id="Environment_inside"]
 background_mode = 1
@@ -50,22 +51,6 @@ roughness = 0.3
 
 [sub_resource type="SphereMesh" id="SphereMesh_liver"]
 material = SubResource("StandardMaterial3D_liver")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glove"]
-albedo_color = Color(0.24, 0.17, 0.11, 1)
-roughness = 0.9
-
-[sub_resource type="BoxMesh" id="BoxMesh_hand"]
-material = SubResource("StandardMaterial3D_glove")
-size = Vector3(0.04, 0.09, 0.08)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sleeve"]
-albedo_color = Color(0.16, 0.18, 0.2, 1)
-roughness = 0.95
-
-[sub_resource type="BoxMesh" id="BoxMesh_arm"]
-material = SubResource("StandardMaterial3D_sleeve")
-size = Vector3(0.06, 0.06, 1)
 
 [node name="InsideCarcass" type="Node3D"]
 script = ExtResource("1_belly")
@@ -129,31 +114,14 @@ near = 0.02
 position = Vector3(0, -0.11, -0.3)
 rotation_degrees = Vector3(30, 0, 0)
 
-[node name="LeftHand" type="MeshInstance3D" parent="Camera3D"]
-position = Vector3(-0.068, -0.14, -0.29)
-rotation_degrees = Vector3(30, 0, 0)
-cast_shadow = 0
-mesh = SubResource("BoxMesh_hand")
+[node name="Arms" type="Node3D" parent="Camera3D"]
+rotation_degrees = Vector3(10, 40, 0)
+script = ExtResource("3_arms")
+idle_animation = "knife_idle"
+show_arms = 1
 
-[node name="RightHand" type="MeshInstance3D" parent="Camera3D"]
-position = Vector3(0.068, -0.14, -0.29)
-rotation_degrees = Vector3(30, 0, 0)
-cast_shadow = 0
-mesh = SubResource("BoxMesh_hand")
-
-[node name="LeftArm" type="MeshInstance3D" parent="Camera3D" node_paths=PackedStringArray("hand")]
-cast_shadow = 0
-mesh = SubResource("BoxMesh_arm")
-script = ExtResource("3_arm")
-hand = NodePath("../LeftHand")
-shoulder = Vector3(-0.25, -0.45, 0.15)
-
-[node name="RightArm" type="MeshInstance3D" parent="Camera3D" node_paths=PackedStringArray("hand")]
-cast_shadow = 0
-mesh = SubResource("BoxMesh_arm")
-script = ExtResource("3_arm")
-hand = NodePath("../RightHand")
-shoulder = Vector3(0.25, -0.45, 0.15)
+[node name="arms_rig" parent="Camera3D/Arms" instance=ExtResource("4_rig")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -1.743, 0)
 
 [node name="Ambience" type="AudioStreamPlayer" parent="."]
 volume_db = -14.0

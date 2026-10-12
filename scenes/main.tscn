@@ -10,6 +10,15 @@
 [ext_resource type="PackedScene" path="res://scenes/player/hands.tscn" id="8_hands"]
 [ext_resource type="Script" uid="uid://db88l8nfsi54s" path="res://scripts/snow_terrain.gd" id="9_terrain"]
 [ext_resource type="Script" uid="uid://dag6q2xt46i8o" path="res://scripts/footprints.gd" id="10_footprints"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/trees/retro_tree_pack/tree_rt_1.glb" id="t_tree_rt_1"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/trees/retro_tree_pack/tree_rt_2.glb" id="t_tree_rt_2"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/trees/retro_tree_pack/tree_rt_2_1.glb" id="t_tree_rt_2_1"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/trees/retro_tree_pack/tree_rt_3.glb" id="t_tree_rt_3"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/trees/retro_tree_pack/tree_rt_4.glb" id="t_tree_rt_4"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/trees/retro_tree_pack/small_tree_rt_1.glb" id="t_small_tree_rt_1"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/trees/retro_tree_pack/dead_tree_rt_1.glb" id="t_dead_tree_rt_1"]
+[ext_resource type="PackedScene" path="res://assets/models/environment/trees/retro_tree_pack/dead_tree_rt_2.glb" id="t_dead_tree_rt_2"]
+[ext_resource type="PackedScene" path="res://assets/models/props/jeep/Landyroamer.fbx" id="11_jeep"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_night"]
 sky_top_color = Color(0.01, 0.012, 0.025, 1)
@@ -70,6 +79,9 @@ material = SubResource("StandardMaterial3D_player")
 radius = 0.3
 height = 1.78
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_jeep"]
+size = Vector3(3.9, 1.8, 1.62)
+
 [node name="Main" type="Node3D" unique_id=1983626017]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=408806856]
@@ -84,7 +96,7 @@ sky_mode = 1
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=329331001]
 script = ExtResource("9_terrain")
-flatten_around = Array[NodePath]([NodePath("../BisonCarcass"), NodePath("../Player")])
+flatten_around = Array[NodePath]([NodePath("../BisonCarcass"), NodePath("../Player"), NodePath("../Jeep")])
 material = SubResource("StandardMaterial3D_snow")
 
 [node name="MapBounds" type="Node3D" parent="." unique_id=1203155874]
@@ -92,6 +104,16 @@ script = ExtResource("4_bounds")
 
 [node name="Forest" type="Node3D" parent="." unique_id=1759031122]
 script = ExtResource("3_forest")
+tree_models = Array[PackedScene]([ExtResource("t_tree_rt_1"), ExtResource("t_tree_rt_2"), ExtResource("t_tree_rt_2_1"), ExtResource("t_tree_rt_3"), ExtResource("t_tree_rt_4"), ExtResource("t_small_tree_rt_1"), ExtResource("t_dead_tree_rt_1"), ExtResource("t_dead_tree_rt_2")])
+
+[node name="Jeep" type="StaticBody3D" parent="."]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, -8, -0.1, -13)
+
+[node name="Model" parent="Jeep" instance=ExtResource("11_jeep")]
+
+[node name="Collision" type="CollisionShape3D" parent="Jeep"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.383, 0.9, 0)
+shape = SubResource("BoxShape3D_jeep")
 
 [node name="Player" type="CharacterBody3D" parent="." unique_id=942901943]
 script = ExtResource("1_player")

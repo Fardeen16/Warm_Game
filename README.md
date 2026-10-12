@@ -49,3 +49,11 @@ Most things can be adjusted in the Godot inspector:
 - **FreezeEffect:** time until death, when frost, darkness and blinking start.
 - **BisonCarcass:** how long cutting takes, which scene loads once inside.
 - **MapBounds:** size of the play area.
+
+## Credits
+All third-party assets are free to use; see the `SOURCE.txt` next to each for links and terms.
+- **Walkie-Talkie** by VerzatileDev (CC0)
+- **PSX First Person Arms** by Drillimpact (CC0)
+- **Retro Tree Pack** by Pizza Doggy (see its License Agreement on itch.io)
+- **Low Poly Car Pack Vol. 1** (Landyroamer jeep) by designersoup (CC0)
+- **Complete and Free PSX UI** by ROHHSA (CC0)

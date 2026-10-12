@@ -8,11 +8,14 @@ extends Node3D
 ## How far you can look around while lying here (degrees left/right, up/down).
 @export var look_range: Vector2 = Vector2(30.0, 18.0)
 @export var mouse_sensitivity: float = 0.002
+## Where the radio sits relative to the right fist holding it, in camera space (m).
+@export var radio_grip_offset: Vector3 = Vector3(0.0, 0.07, -0.01)
 
 const OVERLAY_SHADER := preload("res://shaders/belly_overlay.gdshader")
 
 @onready var _camera: Camera3D = $Camera3D
 @onready var _radio: Radio = $Camera3D/Radio
+@onready var _arms: FPArms = $Camera3D/Arms
 @onready var _ambience: AudioStreamPlayer = $Ambience
 
 var _elapsed := 0.0
@@ -59,6 +62,8 @@ func _process(delta: float) -> void:
 		var breath := sin(t * lerpf(1.4, 2.6, blood))
 		_camera.position = _rest_position + Vector3(0.0, breath * 0.006, 0.0)
 		_camera.rotation = _rest_rotation + Vector3(deg_to_rad(_look.y), deg_to_rad(_look.x), breath * 0.004)
+	# The radio is held in the right fist.
+	_radio.global_position = _arms.bone_transform("hand.R").origin + _camera.global_basis * radio_grip_offset
 	_feed_ambience()
 
 
