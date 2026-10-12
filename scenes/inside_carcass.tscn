@@ -1,21 +1,74 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://scripts/inside_belly.gd" id="1_belly"]
+[ext_resource type="PackedScene" path="res://scenes/props/radio.tscn" id="2_radio"]
+[ext_resource type="Script" path="res://scripts/arm.gd" id="3_arm"]
+
 [sub_resource type="Environment" id="Environment_inside"]
 background_mode = 1
 background_color = Color(0, 0, 0, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.3, 0.06, 0.04, 1)
-ambient_light_energy = 0.3
+ambient_light_color = Color(0.35, 0.05, 0.04, 1)
+ambient_light_energy = 0.15
+tonemap_mode = 3
+glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flesh"]
-albedo_color = Color(0.35, 0.04, 0.04, 1)
-roughness = 0.4
+albedo_color = Color(0.3, 0.04, 0.04, 1)
+roughness = 0.25
 
 [sub_resource type="SphereMesh" id="SphereMesh_cavity"]
 material = SubResource("StandardMaterial3D_flesh")
 flip_faces = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bone"]
+albedo_color = Color(0.6, 0.5, 0.42, 1)
+roughness = 0.5
+
+[sub_resource type="TorusMesh" id="TorusMesh_rib"]
+material = SubResource("StandardMaterial3D_bone")
+inner_radius = 0.47
+outer_radius = 0.52
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_heart"]
+albedo_color = Color(0.25, 0.03, 0.06, 1)
+roughness = 0.2
+
+[sub_resource type="SphereMesh" id="SphereMesh_heart"]
+material = SubResource("StandardMaterial3D_heart")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lung"]
+albedo_color = Color(0.45, 0.16, 0.17, 1)
+roughness = 0.45
+
+[sub_resource type="SphereMesh" id="SphereMesh_lung"]
+material = SubResource("StandardMaterial3D_lung")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_liver"]
+albedo_color = Color(0.18, 0.04, 0.03, 1)
+roughness = 0.3
+
+[sub_resource type="SphereMesh" id="SphereMesh_liver"]
+material = SubResource("StandardMaterial3D_liver")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_glove"]
+albedo_color = Color(0.24, 0.17, 0.11, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_hand"]
+material = SubResource("StandardMaterial3D_glove")
+size = Vector3(0.04, 0.09, 0.08)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sleeve"]
+albedo_color = Color(0.16, 0.18, 0.2, 1)
+roughness = 0.95
+
+[sub_resource type="BoxMesh" id="BoxMesh_arm"]
+material = SubResource("StandardMaterial3D_sleeve")
+size = Vector3(0.06, 0.06, 1)
+
 [node name="InsideCarcass" type="Node3D"]
+script = ExtResource("1_belly")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_inside")
@@ -24,31 +77,83 @@ environment = SubResource("Environment_inside")
 transform = Transform3D(2.25, 0, 0, 0, 0.85, 0, 0, 0, 1.1, 0, 0, 0)
 mesh = SubResource("SphereMesh_cavity")
 
-[node name="DimLight" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.1, -0.3)
-light_color = Color(1, 0.55, 0.4, 1)
-light_energy = 0.4
-omni_range = 2.0
+[node name="Organs" type="Node3D" parent="."]
+
+[node name="Rib1" type="MeshInstance3D" parent="Organs"]
+position = Vector3(-0.2, 0, 0)
+rotation_degrees = Vector3(0, 0, 90)
+scale = Vector3(0.78, 1, 1.02)
+mesh = SubResource("TorusMesh_rib")
+
+[node name="Rib2" type="MeshInstance3D" parent="Organs"]
+position = Vector3(0.1, 0, 0)
+rotation_degrees = Vector3(0, 0, 90)
+scale = Vector3(0.78, 1, 1.02)
+mesh = SubResource("TorusMesh_rib")
+
+[node name="Rib3" type="MeshInstance3D" parent="Organs"]
+position = Vector3(0.4, 0, 0)
+rotation_degrees = Vector3(0, 0, 90)
+scale = Vector3(0.76, 1, 0.98)
+mesh = SubResource("TorusMesh_rib")
+
+[node name="Rib4" type="MeshInstance3D" parent="Organs"]
+position = Vector3(0.7, 0, 0)
+rotation_degrees = Vector3(0, 0, 90)
+scale = Vector3(0.68, 1, 0.88)
+mesh = SubResource("TorusMesh_rib")
+
+[node name="Heart" type="MeshInstance3D" parent="Organs"]
+position = Vector3(0.75, -0.15, 0.22)
+scale = Vector3(0.22, 0.26, 0.22)
+mesh = SubResource("SphereMesh_heart")
+
+[node name="Lung" type="MeshInstance3D" parent="Organs"]
+position = Vector3(0.6, 0.12, -0.3)
+scale = Vector3(0.55, 0.25, 0.3)
+mesh = SubResource("SphereMesh_lung")
+
+[node name="Liver" type="MeshInstance3D" parent="Organs"]
+position = Vector3(0.15, -0.3, 0.3)
+scale = Vector3(0.45, 0.16, 0.32)
+mesh = SubResource("SphereMesh_liver")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, -0.05, 0.1)
+position = Vector3(-0.55, -0.05, 0.05)
+rotation_degrees = Vector3(-5, -90, 0)
 current = true
-fov = 80.0
+fov = 75.0
 near = 0.02
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="Radio" parent="Camera3D" instance=ExtResource("2_radio")]
+position = Vector3(0, -0.11, -0.3)
+rotation_degrees = Vector3(30, 0, 0)
 
-[node name="Placeholder" type="Label" parent="UI"]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -200.0
-offset_top = -80.0
-offset_right = 200.0
-offset_bottom = -40.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "Scene 2 - inside the carcass (to be built)"
-horizontal_alignment = 1
+[node name="LeftHand" type="MeshInstance3D" parent="Camera3D"]
+position = Vector3(-0.1, -0.13, -0.29)
+rotation_degrees = Vector3(30, 0, 0)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_hand")
+
+[node name="RightHand" type="MeshInstance3D" parent="Camera3D"]
+position = Vector3(0.1, -0.13, -0.29)
+rotation_degrees = Vector3(30, 0, 0)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_hand")
+
+[node name="LeftArm" type="MeshInstance3D" parent="Camera3D" node_paths=PackedStringArray("hand")]
+cast_shadow = 0
+mesh = SubResource("BoxMesh_arm")
+script = ExtResource("3_arm")
+hand = NodePath("../LeftHand")
+shoulder = Vector3(-0.25, -0.45, 0.15)
+
+[node name="RightArm" type="MeshInstance3D" parent="Camera3D" node_paths=PackedStringArray("hand")]
+cast_shadow = 0
+mesh = SubResource("BoxMesh_arm")
+script = ExtResource("3_arm")
+hand = NodePath("../RightHand")
+shoulder = Vector3(0.25, -0.45, 0.15)
+
+[node name="Ambience" type="AudioStreamPlayer" parent="."]
+volume_db = -14.0

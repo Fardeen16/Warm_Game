@@ -29,7 +29,10 @@ editing, so there is no snow in-game until you un-hide it (eye icon next to Snow
 ## Scenes
 - **Scene 1, outside** (`scenes/main.tscn`): the blizzard, freezing to death over 90 seconds,
   cutting open the bison and crawling in.
-- **Scene 2, inside the carcass** (`scenes/inside_carcass.tscn`): placeholder, still to be built.
+- **Scene 2, inside the carcass** (`scenes/inside_carcass.tscn`): lying in the dark, bleeding out
+  over 90 seconds. Tune the radio's two knobs (left, then right) to clear the static and call the
+  chopper. A / D, arrow keys or the mouse wheel turn the knob.
+- **Scene 3, rescue** (`scenes/rescue.tscn`): placeholder, still to be built.
 
 ## Project layout
 ```

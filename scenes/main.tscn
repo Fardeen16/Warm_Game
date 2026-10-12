@@ -8,8 +8,8 @@
 [ext_resource type="Script" uid="uid://bw6laqe38j5ho" path="res://scripts/hud.gd" id="6_hud"]
 [ext_resource type="Script" uid="uid://bc4g6fchxq11o" path="res://scripts/freeze_effect.gd" id="7_freeze"]
 [ext_resource type="PackedScene" path="res://scenes/player/hands.tscn" id="8_hands"]
-[ext_resource type="Script" path="res://scripts/snow_terrain.gd" id="9_terrain"]
-[ext_resource type="Script" path="res://scripts/footprints.gd" id="10_footprints"]
+[ext_resource type="Script" uid="uid://db88l8nfsi54s" path="res://scripts/snow_terrain.gd" id="9_terrain"]
+[ext_resource type="Script" uid="uid://dag6q2xt46i8o" path="res://scripts/footprints.gd" id="10_footprints"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_night"]
 sky_top_color = Color(0.01, 0.012, 0.025, 1)
@@ -45,10 +45,10 @@ fractal_octaves = 4
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_snow"]
 width = 256
 height = 256
+noise = SubResource("FastNoiseLite_snow")
 seamless = true
 as_normal_map = true
 bump_strength = 3.0
-noise = SubResource("FastNoiseLite_snow")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_snow"]
 albedo_color = Color(0.7, 0.73, 0.79, 1)
@@ -104,7 +104,7 @@ shape = SubResource("CapsuleShape3D_player")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
 mesh = SubResource("CapsuleMesh_player")
 
-[node name="Footprints" type="Node3D" parent="Player"]
+[node name="Footprints" type="Node3D" parent="Player" unique_id=358434929]
 script = ExtResource("10_footprints")
 
 [node name="Head" type="Node3D" parent="Player" unique_id=600899108]
