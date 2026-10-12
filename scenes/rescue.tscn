@@ -16,6 +16,7 @@
 [ext_resource type="Script" path="res://scripts/rope_grab.gd" id="14_rope"]
 [ext_resource type="Script" path="res://scripts/captions.gd" id="15_captions"]
 [ext_resource type="Texture2D" path="res://assets/ui/psx_ui/fullres_720p/Skin05-Cropped_Text-Block.png" id="16_box"]
+[ext_resource type="Script" path="res://scripts/storm_audio.gd" id="20_storm_audio"]
 [ext_resource type="PackedScene" uid="uid://7knh15b24r0f" path="res://assets/models/environment/trees/retro_tree_pack/dead_tree_rt_1.glb" id="t_dead_tree_rt_1"]
 [ext_resource type="PackedScene" uid="uid://ccunhd1xbfqoy" path="res://assets/models/environment/trees/retro_tree_pack/dead_tree_rt_2.glb" id="t_dead_tree_rt_2"]
 [ext_resource type="PackedScene" uid="uid://bfdstnnkqcqhw" path="res://assets/models/environment/trees/retro_tree_pack/small_tree_rt_1.glb" id="t_small_tree_rt_1"]
@@ -145,6 +146,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
 shape = SubResource("CapsuleShape3D_player")
 
 [node name="Body" type="MeshInstance3D" parent="Player"]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
 cast_shadow = 0
 mesh = SubResource("CapsuleMesh_player")
@@ -203,3 +205,8 @@ far = 1000.0
 [node name="Captions" type="CanvasLayer" parent="."]
 script = ExtResource("15_captions")
 box_texture = ExtResource("16_box")
+
+[node name="StormAudio" type="AudioStreamPlayer" parent="."]
+volume_db = -3.0
+script = ExtResource("20_storm_audio")
+storm = NodePath("../SnowStorm")

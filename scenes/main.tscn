@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://db88l8nfsi54s" path="res://scripts/snow_terrain.gd" id="9_terrain"]
 [ext_resource type="Script" uid="uid://dag6q2xt46i8o" path="res://scripts/footprints.gd" id="10_footprints"]
 [ext_resource type="PackedScene" uid="uid://iu3pfbh5n5bc" path="res://assets/models/props/jeep/Landyroamer.fbx" id="11_jeep"]
+[ext_resource type="Script" path="res://scripts/storm_audio.gd" id="20_storm_audio"]
 [ext_resource type="PackedScene" uid="uid://7knh15b24r0f" path="res://assets/models/environment/trees/retro_tree_pack/dead_tree_rt_1.glb" id="t_dead_tree_rt_1"]
 [ext_resource type="PackedScene" uid="uid://ccunhd1xbfqoy" path="res://assets/models/environment/trees/retro_tree_pack/dead_tree_rt_2.glb" id="t_dead_tree_rt_2"]
 [ext_resource type="PackedScene" uid="uid://bfdstnnkqcqhw" path="res://assets/models/environment/trees/retro_tree_pack/small_tree_rt_1.glb" id="t_small_tree_rt_1"]
@@ -41,6 +42,7 @@ fog_enabled = true
 fog_light_color = Color(0.42, 0.46, 0.53, 1)
 fog_density = 0.0397
 fog_sky_affect = 0.8
+volumetric_fog_enabled = true
 volumetric_fog_density = 0.01
 volumetric_fog_emission = Color(0.35, 0.38, 0.45, 1)
 volumetric_fog_emission_energy = 0.4
@@ -124,6 +126,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
 shape = SubResource("CapsuleShape3D_player")
 
 [node name="Body" type="MeshInstance3D" parent="Player" unique_id=1076589425]
+visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
 cast_shadow = 0
 mesh = SubResource("CapsuleMesh_player")
@@ -145,11 +148,9 @@ current = true
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 1.5, 0, -5)
 
 [node name="SnowStorm" type="Node3D" parent="." unique_id=2091973302]
-visible = false
 script = ExtResource("2_storm")
 intensity = 0.99
 storm_speed = 2.5
-clouds_enabled = false
 cloud_density_storm = 0.69
 cloud_glow = 0.6
 cloud_coverage = 0.4
@@ -163,3 +164,8 @@ player = NodePath("../Player")
 [node name="FreezeEffect" type="CanvasLayer" parent="." unique_id=471059132]
 script = ExtResource("7_freeze")
 player = NodePath("../Player")
+
+[node name="StormAudio" type="AudioStreamPlayer" parent="."]
+volume_db = -3.0
+script = ExtResource("20_storm_audio")
+storm = NodePath("../SnowStorm")

@@ -13,8 +13,8 @@ extends Node3D
 @export_range(3.0, 60.0, 0.5) var descent_time: float = 22.0
 ## How much stronger the wind gets right under the rotor (2.5 = three and a half times).
 @export_range(0.0, 10.0, 0.1) var downwash: float = 2.5
-## How hard the view shakes under the rotor.
-@export_range(0.0, 0.1, 0.001) var shake: float = 0.012
+## How hard the view shakes under the rotor (degrees). Your hands stay steady.
+@export_range(0.0, 3.0, 0.05) var shake: float = 0.4
 @export var arrival_lines: PackedStringArray = ["That sound... is that a chopper?"]
 @export var rope_lines: PackedStringArray = ["The rope! I have to grab it."]
 ## Where "play again" goes.
@@ -27,6 +27,7 @@ extends Node3D
 @onready var _rope_grab: RopeGrab = $RopeGrab
 @onready var _captions: Captions = $Captions
 @onready var _cutscene_camera: Camera3D = $CutsceneCamera
+@onready var _hands: Node3D = $Player/Head/Camera3D/Hands
 
 var _start: Vector3
 var _base_wind := 0.0
@@ -88,16 +89,16 @@ func _process(delta: float) -> void:
 		closeness = clampf(1.0 - (_heli.global_position.y - hover_point.y) / 40.0, 0.0, 1.0)
 	_storm.wind_strength = _base_wind * (1.0 + downwash * closeness * closeness)
 	_storm.intensity = lerpf(_base_intensity, 1.0, closeness)
-	_heli.get_node("RotorSound").volume_db = lerpf(-8.0, 0.0, closeness)
+	_heli.get_node("RotorSound").volume_db = lerpf(-5.0, 3.0, closeness)
 
 	if _hovering:
 		# Holding position in the gusts.
 		_heli.global_position = hover_point + Vector3(sin(_time * 0.7) * 0.4, sin(_time * 1.1) * 0.3, cos(_time * 0.5) * 0.3)
 
-	var camera := _player.camera
-	var amount := shake * closeness * closeness
-	camera.h_offset = randf_range(-amount, amount)
-	camera.v_offset = randf_range(-amount, amount)
+	# Shake by turning the camera a touch: the world shakes, but your hands (attached to the
+	# camera) stay steady in front of you.
+	var amount := deg_to_rad(shake) * closeness * closeness
+	_player.camera.rotation = Vector3(randf_range(-amount, amount), randf_range(-amount, amount), 0.0)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -123,7 +124,7 @@ func _on_rope_grabbed() -> void:
 	create_tween().tween_property(_storm, "haze_density_storm", 0.025, 2.0)
 	_cutscene_camera.look_at(_heli.global_position)
 	_cutscene_camera.current = true
-	_player.get_node("Head/Camera3D/Hands").visible = false
+	_hands.visible = false
 	var leave := create_tween()
 	leave.tween_property(_heli, "global_position", away, 9.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	var track := func(_v: Variant) -> void: _cutscene_camera.look_at(_heli.global_position)

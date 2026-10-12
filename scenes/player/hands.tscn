@@ -46,8 +46,8 @@ transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -1.743, 0)
 bone_name = "hand.L"
 
 [node name="Knife" type="Node3D" parent="LeftArm/arms_rig/ArmsRig/Skeleton3D/KnifeGrip"]
-position = Vector3(0, 0.08, 0)
-rotation_degrees = Vector3(0, 90, 0)
+position = Vector3(0.025, 0.13, 0)
+rotation_degrees = Vector3(0, 180, 90)
 
 [node name="Grip" type="MeshInstance3D" parent="LeftArm/arms_rig/ArmsRig/Skeleton3D/KnifeGrip/Knife"]
 cast_shadow = 0
