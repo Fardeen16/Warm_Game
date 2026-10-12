@@ -32,7 +32,9 @@ editing, so there is no snow in-game until you un-hide it (eye icon next to Snow
 - **Scene 2, inside the carcass** (`scenes/inside_carcass.tscn`): lying in the dark, bleeding out
   over 90 seconds. Tune the radio's two knobs (left, then right) to clear the static and call the
   chopper. A / D, arrow keys or the mouse wheel turn the knob.
-- **Scene 3, rescue** (`scenes/rescue.tscn`): placeholder, still to be built.
+- **Scene 3, rescue** (`scenes/rescue.tscn`): built from a copy of scene 1. A helicopter comes down
+  out of the storm, getting louder and whipping up the wind; it lowers a rope, you walk over and
+  press E to grab on, get winched up, and a wide shot watches it fly away.
 
 ## Project layout
 ```
@@ -57,3 +59,4 @@ All third-party assets are free to use; see the `SOURCE.txt` next to each for li
 - **Retro Tree Pack** by Pizza Doggy (see its License Agreement on itch.io)
 - **Low Poly Car Pack Vol. 1** (Landyroamer jeep) by designersoup (CC0)
 - **Complete and Free PSX UI** by ROHHSA (CC0)
+- **Helicopter** (Huey) by Sami, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (credit required): https://samifd3f122.itch.io/helicopter

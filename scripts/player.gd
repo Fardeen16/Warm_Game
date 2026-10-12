@@ -31,6 +31,8 @@ var _kneel_target: Node3D
 var _stand_height := 0.0
 var _cut_point := Vector3.ZERO
 var _cut_frame := -1
+# Something the player is hanging from (a rope end), null when on their own feet.
+var _attached_to: Node3D
 
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
@@ -42,12 +44,14 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	_interact_ray.target_position = Vector3.FORWARD * reach
 	_interact_ray.add_exception(self)
+	# Layer 2 holds things you can interact with but not bump into (like a rope).
+	_interact_ray.collision_mask = 1 | 2
 	_stand_height = head.position.y
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		if controls_enabled and _kneel_target == null:
+		if (controls_enabled or _attached_to) and _kneel_target == null:
 			rotate_y(-event.relative.x * mouse_sensitivity)
 			head.rotate_x(-event.relative.y * mouse_sensitivity)
 			head.rotation.x = clampf(head.rotation.x, deg_to_rad(-max_look_down), deg_to_rad(max_look_up))
@@ -58,6 +62,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if _attached_to:
+		# Hanging on: carried along, free to look around.
+		velocity = Vector3.ZERO
+		global_position = _attached_to.global_position
+		return
+
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
@@ -178,6 +188,15 @@ func enter_shelter(entry: Node3D, inside: Node3D, on_inside: Callable) -> void:
 func _move_camera(weight: float, from: Transform3D, to: Transform3D) -> void:
 	# interpolate_with turns smoothly instead of skewing like a plain lerp.
 	camera.global_transform = from.interpolate_with(to, weight)
+
+
+## Hang from target (e.g. the bottom of a rope), carried wherever it goes. You can still look
+## around but not walk.
+func attach_to(target: Node3D) -> void:
+	_attached_to = target
+	controls_enabled = false
+	_kneel_target = null
+	interaction_changed.emit("", -1.0)
 
 
 func die() -> void:

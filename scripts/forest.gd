@@ -21,6 +21,16 @@ extends Node3D
 		random_seed = value
 		_regenerate()
 
+## Extra trees packed along the edge of the square play area (the invisible walls), so the
+## map feels closed in by forest. Distances are from the center along x or z.
+@export_range(0, 1000) var edge_tree_count: int = 140:
+	set(value):
+		edge_tree_count = value
+		_regenerate()
+@export var edge_band: Vector2 = Vector2(14.0, 26.0):
+	set(value):
+		edge_band = value
+		_regenerate()
 ## Tree models to scatter. Leave empty for simple placeholder pines.
 @export var tree_models: Array[PackedScene] = []:
 	set(value):
@@ -82,11 +92,21 @@ func _regenerate() -> void:
 	rng.seed = random_seed
 	# Stand the trees on the snow if there is uneven terrain.
 	var terrain := get_tree().get_first_node_in_group("snow_terrain") if is_inside_tree() else null
+	var spots: Array[Vector3] = []
 	for i in tree_count:
 		var angle := rng.randf() * TAU
 		var dist := sqrt(rng.randf_range(inner_radius * inner_radius, outer_radius * outer_radius))
+		spots.append(Vector3(cos(angle) * dist, 0.0, sin(angle) * dist))
+	for i in edge_tree_count:
+		# A random point in the square ring between edge_band.x and edge_band.y.
+		var spot := Vector3.ZERO
+		while maxf(absf(spot.x), absf(spot.z)) < edge_band.x:
+			spot = Vector3(rng.randf_range(-edge_band.y, edge_band.y), 0.0, rng.randf_range(-edge_band.y, edge_band.y))
+		spots.append(spot)
+
+	for spot in spots:
 		var tree := StaticBody3D.new()
-		tree.position = Vector3(cos(angle) * dist, 0.0, sin(angle) * dist)
+		tree.position = spot
 		if terrain:
 			# Sink a little so the trunk doesn't hover on a slope.
 			var world := to_global(tree.position)

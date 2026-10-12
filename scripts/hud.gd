@@ -22,7 +22,8 @@ func _ready() -> void:
 	box.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	box.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	box.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	box.position.y -= 120
+	# Sits above the caption box.
+	box.position.y -= 175
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	add_child(box)
 

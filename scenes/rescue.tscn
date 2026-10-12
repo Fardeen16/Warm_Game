@@ -1,28 +1,205 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" uid="uid://brcvb24yli3fm" path="res://scripts/player.gd" id="1_player"]
+[ext_resource type="Script" uid="uid://bpa4s01tk3vbk" path="res://scripts/snow_storm.gd" id="2_storm"]
+[ext_resource type="Script" uid="uid://uv45gd76ok5q" path="res://scripts/forest.gd" id="3_forest"]
+[ext_resource type="Script" uid="uid://dqghmtka4cjv5" path="res://scripts/map_bounds.gd" id="4_bounds"]
+[ext_resource type="PackedScene" path="res://scenes/props/bison_carcass.tscn" id="5_bison"]
+[ext_resource type="Script" uid="uid://bw6laqe38j5ho" path="res://scripts/hud.gd" id="6_hud"]
+[ext_resource type="Script" uid="uid://bc4g6fchxq11o" path="res://scripts/freeze_effect.gd" id="7_freeze"]
+[ext_resource type="PackedScene" path="res://scenes/player/hands.tscn" id="8_hands"]
+[ext_resource type="Script" uid="uid://db88l8nfsi54s" path="res://scripts/snow_terrain.gd" id="9_terrain"]
+[ext_resource type="Script" uid="uid://dag6q2xt46i8o" path="res://scripts/footprints.gd" id="10_footprints"]
+[ext_resource type="PackedScene" uid="uid://iu3pfbh5n5bc" path="res://assets/models/props/jeep/Landyroamer.fbx" id="11_jeep"]
+[ext_resource type="Script" path="res://scripts/rescue.gd" id="12_rescue"]
+[ext_resource type="PackedScene" path="res://scenes/props/helicopter.tscn" id="13_heli"]
+[ext_resource type="Script" path="res://scripts/rope_grab.gd" id="14_rope"]
+[ext_resource type="Script" path="res://scripts/captions.gd" id="15_captions"]
+[ext_resource type="Texture2D" path="res://assets/ui/psx_ui/fullres_720p/Skin05-Cropped_Text-Block.png" id="16_box"]
+[ext_resource type="PackedScene" uid="uid://7knh15b24r0f" path="res://assets/models/environment/trees/retro_tree_pack/dead_tree_rt_1.glb" id="t_dead_tree_rt_1"]
+[ext_resource type="PackedScene" uid="uid://ccunhd1xbfqoy" path="res://assets/models/environment/trees/retro_tree_pack/dead_tree_rt_2.glb" id="t_dead_tree_rt_2"]
+[ext_resource type="PackedScene" uid="uid://bfdstnnkqcqhw" path="res://assets/models/environment/trees/retro_tree_pack/small_tree_rt_1.glb" id="t_small_tree_rt_1"]
+[ext_resource type="PackedScene" uid="uid://duqacpvq6lnii" path="res://assets/models/environment/trees/retro_tree_pack/tree_rt_1.glb" id="t_tree_rt_1"]
+[ext_resource type="PackedScene" uid="uid://yghnu5d4x8mo" path="res://assets/models/environment/trees/retro_tree_pack/tree_rt_2.glb" id="t_tree_rt_2"]
+[ext_resource type="PackedScene" uid="uid://dq3abi0yf148j" path="res://assets/models/environment/trees/retro_tree_pack/tree_rt_2_1.glb" id="t_tree_rt_2_1"]
+[ext_resource type="PackedScene" uid="uid://dkv3paogquqgc" path="res://assets/models/environment/trees/retro_tree_pack/tree_rt_3.glb" id="t_tree_rt_3"]
+[ext_resource type="PackedScene" uid="uid://b48g82pvcnywl" path="res://assets/models/environment/trees/retro_tree_pack/tree_rt_4.glb" id="t_tree_rt_4"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_night"]
+sky_top_color = Color(0.01, 0.012, 0.025, 1)
+sky_horizon_color = Color(0.05, 0.06, 0.08, 1)
+ground_bottom_color = Color(0.02, 0.02, 0.03, 1)
+ground_horizon_color = Color(0.05, 0.06, 0.08, 1)
+
+[sub_resource type="Sky" id="Sky_night"]
+sky_material = SubResource("ProceduralSkyMaterial_night")
+
+[sub_resource type="Environment" id="Environment_storm"]
+background_mode = 2
+sky = SubResource("Sky_night")
+ambient_light_source = 2
+ambient_light_color = Color(0.35, 0.4, 0.5, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 3
+glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.42, 0.46, 0.53, 1)
+fog_density = 0.0397
+fog_sky_affect = 0.8
+volumetric_fog_density = 0.01
+volumetric_fog_emission = Color(0.35, 0.38, 0.45, 1)
+volumetric_fog_emission_energy = 0.4
+volumetric_fog_length = 80.0
+volumetric_fog_ambient_inject = 1.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_snow"]
+frequency = 0.03
+fractal_octaves = 4
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_snow"]
+width = 256
+height = 256
+noise = SubResource("FastNoiseLite_snow")
+seamless = true
+as_normal_map = true
+bump_strength = 3.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_snow"]
+albedo_color = Color(0.7, 0.73, 0.79, 1)
+roughness = 0.85
+normal_enabled = true
+normal_scale = 0.6
+normal_texture = SubResource("NoiseTexture2D_snow")
+uv1_scale = Vector3(0.35, 0.35, 0.35)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jeep"]
+size = Vector3(3.9, 1.8, 1.62)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
+radius = 0.3
+height = 1.78
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_player"]
+albedo_color = Color(0.75, 0.25, 0.15, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_player"]
+material = SubResource("StandardMaterial3D_player")
+radius = 0.3
+height = 1.78
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rope"]
+radius = 0.3
+height = 2.6
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_far"]
+material = SubResource("StandardMaterial3D_snow")
+size = Vector2(3000, 3000)
+
 [node name="Rescue" type="Node3D"]
+script = ExtResource("12_rescue")
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_storm")
 
-[node name="Background" type="ColorRect" parent="UI"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
+[node name="Moonlight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 20, 0)
+light_color = Color(0.7, 0.76, 0.9, 1)
+light_energy = 0.2
+shadow_enabled = true
+sky_mode = 1
 
-[node name="Placeholder" type="Label" parent="UI"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -250.0
-offset_top = -20.0
-offset_right = 250.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Scene 3 - the chopper arrives (to be built)"
-horizontal_alignment = 1
+[node name="Ground" type="StaticBody3D" parent="."]
+script = ExtResource("9_terrain")
+size = 320.0
+flatten_around = Array[NodePath]([NodePath("../BisonCarcass"), NodePath("../Player"), NodePath("../Jeep")])
+material = SubResource("StandardMaterial3D_snow")
+
+[node name="FarSnow" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
+mesh = SubResource("PlaneMesh_far")
+
+[node name="MapBounds" type="Node3D" parent="."]
+script = ExtResource("4_bounds")
+
+[node name="Forest" type="Node3D" parent="."]
+script = ExtResource("3_forest")
+tree_count = 420
+outer_radius = 120.0
+tree_models = Array[PackedScene]([ExtResource("t_tree_rt_1"), ExtResource("t_tree_rt_2"), ExtResource("t_tree_rt_2_1"), ExtResource("t_tree_rt_3"), ExtResource("t_tree_rt_4"), ExtResource("t_small_tree_rt_1"), ExtResource("t_dead_tree_rt_1"), ExtResource("t_dead_tree_rt_2")])
+
+[node name="Jeep" type="StaticBody3D" parent="."]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 6.1360216, 0.16576615, 4.7042217)
+
+[node name="Model" parent="Jeep" instance=ExtResource("11_jeep")]
+transform = Transform3D(1.0000002, 0, 0, 0, 1, 0, 0, 0, 1.0000002, 0, -0.3242507, 0)
+
+[node name="Collision" type="CollisionShape3D" parent="Jeep"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.383, 0.9, 0)
+shape = SubResource("BoxShape3D_jeep")
+
+[node name="Player" type="CharacterBody3D" parent="."]
+script = ExtResource("1_player")
+
+[node name="Collision" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
+shape = SubResource("CapsuleShape3D_player")
+
+[node name="Body" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_player")
+
+[node name="Footprints" type="Node3D" parent="Player"]
+script = ExtResource("10_footprints")
+
+[node name="Head" type="Node3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.66, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Player/Head"]
+current = true
+
+[node name="InteractRay" type="RayCast3D" parent="Player/Head/Camera3D"]
+
+[node name="Hands" parent="Player/Head/Camera3D" instance=ExtResource("8_hands")]
+
+[node name="BisonCarcass" parent="." instance=ExtResource("5_bison")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 1.5, 0, -5)
+is_cut_open = true
+can_enter = false
+
+[node name="SnowStorm" type="Node3D" parent="."]
+script = ExtResource("2_storm")
+intensity = 0.99
+storm_speed = 2.5
+clouds_enabled = false
+cloud_density_storm = 0.69
+cloud_glow = 0.6
+cloud_coverage = 0.4
+cloud_scale = 18.0
+world_environment = NodePath("../WorldEnvironment")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("6_hud")
+player = NodePath("../Player")
+
+[node name="FreezeEffect" type="CanvasLayer" parent="."]
+script = ExtResource("7_freeze")
+enabled = false
+player = NodePath("../Player")
+
+[node name="Helicopter" parent="." instance=ExtResource("13_heli")]
+
+[node name="RopeGrab" type="StaticBody3D" parent="."]
+script = ExtResource("14_rope")
+
+[node name="Shape" type="CollisionShape3D" parent="RopeGrab"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+shape = SubResource("CapsuleShape3D_rope")
+
+[node name="CutsceneCamera" type="Camera3D" parent="."]
+fov = 60.0
+far = 1000.0
+
+[node name="Captions" type="CanvasLayer" parent="."]
+script = ExtResource("15_captions")
+box_texture = ExtResource("16_box")

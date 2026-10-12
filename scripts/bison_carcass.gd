@@ -21,6 +21,8 @@ signal entered
 @export_range(0.2, 20.0, 0.1) var cut_duration: float = 3.0
 ## Scene loaded once the player has crawled inside.
 @export_file("*.tscn") var inside_scene: String = "res://scenes/inside_carcass.tscn"
+## Off once you've already been inside (scene 3), so it can't be cut or entered again.
+@export var can_enter: bool = true
 
 ## Where the cut runs along the body: from the hind belly (x) to just behind the front legs.
 @export var cut_from_x: float = -0.775
@@ -50,7 +52,7 @@ func _ready() -> void:
 
 
 func can_interact(player: Node3D) -> bool:
-	return player == _player_in_reach and not _entered
+	return can_enter and player == _player_in_reach and not _entered
 
 
 func get_prompt() -> String:
