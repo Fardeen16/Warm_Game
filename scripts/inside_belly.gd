@@ -6,10 +6,13 @@ extends Node3D
 @export_range(10.0, 600.0, 1.0) var time_limit: float = 90.0
 @export_file("*.tscn") var next_scene: String = "res://scenes/rescue.tscn"
 ## How far you can look around while lying here (degrees left/right, up/down).
-@export var look_range: Vector2 = Vector2(30.0, 18.0)
+@export var look_range: Vector2 = Vector2(6.0, 4.0)
 @export var mouse_sensitivity: float = 0.002
-## Where the radio sits relative to the right fist holding it, in camera space (m).
-@export var radio_grip_offset: Vector3 = Vector3(0.0, 0.07, -0.01)
+## Where the radio's center sits in the right hand's own space: a little along the fingers
+## and out from the palm, so the palm rests on the radio's right side (m).
+@export var grip_center: Vector3 = Vector3(0.0, 0.05, 0.05)
+## Flip which way up the radio sits in the hand if the thumb ends up behind it.
+@export var grip_flip: bool = false
 
 const OVERLAY_SHADER := preload("res://shaders/belly_overlay.gdshader")
 
@@ -23,6 +26,7 @@ var _dead := false
 var _leaving := false
 var _rest_rotation: Vector3
 var _rest_position: Vector3
+var _radio_rest: Transform3D
 var _look := Vector2.ZERO
 var _overlay_mat: ShaderMaterial
 var _fade: ColorRect
@@ -37,6 +41,7 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	_rest_rotation = _camera.rotation
 	_rest_position = _camera.position
+	_radio_rest = _radio.transform
 	_build_ui()
 	_radio.knob_locked.connect(func(_i: int) -> void: _update_hint())
 	_radio.solved.connect(_on_radio_solved)
@@ -62,9 +67,21 @@ func _process(delta: float) -> void:
 		var breath := sin(t * lerpf(1.4, 2.6, blood))
 		_camera.position = _rest_position + Vector3(0.0, breath * 0.006, 0.0)
 		_camera.rotation = _rest_rotation + Vector3(deg_to_rad(_look.y), deg_to_rad(_look.x), breath * 0.004)
-	# The radio is held in the right fist.
-	_radio.global_position = _arms.bone_transform("hand.R").origin + _camera.global_basis * radio_grip_offset
+	_hold_radio()
 	_feed_ambience()
+
+
+## Keeps the radio where it was placed in the scene and moves the arm so the right hand wraps
+## around its right side: palm on the side, fingers round the back, thumb across the front.
+func _hold_radio() -> void:
+	_radio.transform = _radio_rest
+	var hand_in_arm := _arms.global_transform.affine_inverse() * _arms.bone_transform("hand.R")
+	# Radio axes in the hand's space: its right side faces the palm (+Z of the hand), its top
+	# runs across the hand.
+	var right := Vector3(0, 0, -1)
+	var up := Vector3(-1, 0, 0) if grip_flip else Vector3(1, 0, 0)
+	var radio_in_hand := Transform3D(Basis(right, up, right.cross(up)), grip_center)
+	_arms.transform = _radio_rest * (hand_in_arm * radio_in_hand).affine_inverse()
 
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -16,13 +16,6 @@ roughness = 0.5
 albedo_color = Color(0.05, 0.05, 0.05, 1)
 roughness = 0.6
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l36rf"]
-albedo_color = Color(0.55, 0.06, 0.05, 1)
-roughness = 0.3
-emission_enabled = true
-emission = Color(0.25, 0.02, 0.02, 1)
-emission_energy_multiplier = 0.6
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yvj5m"]
 albedo_color = Color(0.85, 0.88, 0.95, 1)
 
@@ -150,21 +143,6 @@ radius = 0.04
 height = 0.5
 sides = 12
 material = SubResource("StandardMaterial3D_fktpw")
-
-[node name="Cavity" type="CSGSphere3D" parent="Body" unique_id=1858657233]
-transform = Transform3D(2.25, 0, 0, 0, 0.85, 0, 0, 0, 1.1, 0, 0.58, 0.05)
-visible = false
-operation = 2
-radial_segments = 24
-rings = 16
-material = SubResource("StandardMaterial3D_l36rf")
-
-[node name="Opening" type="CSGBox3D" parent="Body" unique_id=1053953059]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0875, 0.6, -0.65)
-visible = false
-operation = 2
-size = Vector3(1.375, 0.55, 0.6)
-material = SubResource("StandardMaterial3D_l36rf")
 
 [node name="SnowDrift" type="MeshInstance3D" parent="." unique_id=852591687]
 transform = Transform3D(2.2, 0, 0, 0, 0.12, 0, 0, 0, 0.9, 0.1, 1.07, 0.2)

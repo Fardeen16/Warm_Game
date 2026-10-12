@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" path="res://scenes/props/radio.tscn" id="2_radio"]
 [ext_resource type="Script" path="res://scripts/fp_arms.gd" id="3_arms"]
 [ext_resource type="PackedScene" path="res://assets/models/characters/player/arms/arms_rig.glb" id="4_rig"]
+[ext_resource type="Script" path="res://scripts/hand_grip.gd" id="5_grip"]
 
 [sub_resource type="Environment" id="Environment_inside"]
 background_mode = 1
@@ -115,13 +116,17 @@ position = Vector3(0, -0.11, -0.3)
 rotation_degrees = Vector3(30, 0, 0)
 
 [node name="Arms" type="Node3D" parent="Camera3D"]
-rotation_degrees = Vector3(10, 40, 0)
 script = ExtResource("3_arms")
-idle_animation = "knife_idle"
+idle_animation = "relax"
 show_arms = 1
 
 [node name="arms_rig" parent="Camera3D/Arms" instance=ExtResource("4_rig")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -1.743, 0)
+
+[node name="Grip" type="SkeletonModifier3D" parent="Camera3D/Arms/arms_rig/ArmsRig/Skeleton3D"]
+script = ExtResource("5_grip")
+finger_curl = 45.0
+thumb_curl = 20.0
 
 [node name="Ambience" type="AudioStreamPlayer" parent="."]
 volume_db = -14.0
