@@ -116,7 +116,10 @@ func _ready() -> void:
 		_layers.append(_build_layer(size_class))
 	_rng.randomize()
 	_schedule_next_shift()
-	_build_clouds()
+	if RenderingServer.get_current_rendering_method() == "forward_plus":
+		_build_clouds()
+	else:
+		clouds_enabled = false
 	_update_storm(0.0)
 
 
@@ -265,15 +268,17 @@ func _update_storm(delta: float) -> void:
 
 	_draw_mat.set_shader_parameter("color", snow_color)
 
-	_cloud_volume.visible = clouds_enabled
-	_cloud_volume.size = Vector3(area_size * 2.0, cloud_height, area_size * 2.0)
-	_cloud_volume.global_position = center + Vector3.UP * cloud_height * 0.5
-	_cloud_offset += base_wind * cloud_speed * delta
-	_cloud_mat.set_shader_parameter("density", lerpf(cloud_density_calm, cloud_density_storm, intensity))
-	_cloud_mat.set_shader_parameter("emission", cloud_color * cloud_glow)
-	_cloud_mat.set_shader_parameter("coverage", cloud_coverage)
-	_cloud_mat.set_shader_parameter("noise_scale", 1.0 / cloud_scale)
-	_cloud_mat.set_shader_parameter("offset", _cloud_offset)
+	if _cloud_volume:
+		_cloud_volume.visible = clouds_enabled
+	if _cloud_volume:
+		_cloud_volume.size = Vector3(area_size * 2.0, cloud_height, area_size * 2.0)
+		_cloud_volume.global_position = center + Vector3.UP * cloud_height * 0.5
+		_cloud_offset += base_wind * cloud_speed * delta
+		_cloud_mat.set_shader_parameter("density", lerpf(cloud_density_calm, cloud_density_storm, intensity))
+		_cloud_mat.set_shader_parameter("emission", cloud_color * cloud_glow)
+		_cloud_mat.set_shader_parameter("coverage", cloud_coverage)
+		_cloud_mat.set_shader_parameter("noise_scale", 1.0 / cloud_scale)
+		_cloud_mat.set_shader_parameter("offset", _cloud_offset)
 
 	if control_fog:
 		var env_node := get_node_or_null(world_environment) as WorldEnvironment
