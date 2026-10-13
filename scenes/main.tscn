@@ -12,9 +12,9 @@
 [ext_resource type="Script" uid="uid://dag6q2xt46i8o" path="res://scripts/footprints.gd" id="10_footprints"]
 [ext_resource type="PackedScene" uid="uid://iu3pfbh5n5bc" path="res://assets/models/props/jeep/Landyroamer.fbx" id="11_jeep"]
 [ext_resource type="Script" uid="uid://dde84lyh88ln" path="res://scripts/storm_audio.gd" id="20_storm_audio"]
-[ext_resource type="Script" path="res://scripts/game_intro.gd" id="21_intro"]
-[ext_resource type="Script" path="res://scripts/captions.gd" id="22_captions"]
-[ext_resource type="Texture2D" path="res://assets/ui/psx_ui/fullres_720p/Skin05-Cropped_Text-Block.png" id="23_box"]
+[ext_resource type="Script" uid="uid://ctg2wqtjbj42s" path="res://scripts/game_intro.gd" id="21_intro"]
+[ext_resource type="Script" uid="uid://bf438fwbj82c8" path="res://scripts/captions.gd" id="22_captions"]
+[ext_resource type="Texture2D" uid="uid://dta7r5sdjdtwj" path="res://assets/ui/psx_ui/fullres_720p/Skin05-Cropped_Text-Block.png" id="23_box"]
 [ext_resource type="PackedScene" uid="uid://7knh15b24r0f" path="res://assets/models/environment/trees/retro_tree_pack/dead_tree_rt_1.glb" id="t_dead_tree_rt_1"]
 [ext_resource type="PackedScene" uid="uid://ccunhd1xbfqoy" path="res://assets/models/environment/trees/retro_tree_pack/dead_tree_rt_2.glb" id="t_dead_tree_rt_2"]
 [ext_resource type="PackedScene" uid="uid://bfdstnnkqcqhw" path="res://assets/models/environment/trees/retro_tree_pack/small_tree_rt_1.glb" id="t_small_tree_rt_1"]
@@ -151,7 +151,7 @@ current = true
 [node name="Hands" parent="Player/Head/Camera3D" unique_id=852013023 instance=ExtResource("8_hands")]
 
 [node name="BisonCarcass" parent="." unique_id=1037808181 instance=ExtResource("5_bison")]
-transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -4, 0, -12)
+transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -4, 0, -18.57279)
 
 [node name="SnowStorm" type="Node3D" parent="." unique_id=2091973302]
 script = ExtResource("2_storm")
@@ -176,9 +176,9 @@ volume_db = -3.0
 script = ExtResource("20_storm_audio")
 storm = NodePath("../SnowStorm")
 
-[node name="MenuCamera" type="Camera3D" parent="."]
+[node name="MenuCamera" type="Camera3D" parent="." unique_id=601554024]
 fov = 55.0
 
-[node name="Captions" type="CanvasLayer" parent="."]
+[node name="Captions" type="CanvasLayer" parent="." unique_id=434078285]
 script = ExtResource("22_captions")
 box_texture = ExtResource("23_box")

@@ -29,7 +29,7 @@ const OVERLAY_SHADER := preload("res://shaders/freeze_overlay.gdshader")
 
 var _overlay: ColorRect
 var _material: ShaderMaterial
-var _death_screen: Control
+var _death_screen: DeathScreen
 var _blink := 0.0
 var _blink_tween: Tween
 var _next_blink := 0.0
@@ -42,7 +42,8 @@ func _ready() -> void:
 	add_to_group("freeze_effect")
 	layer = 10
 	_build_overlay()
-	_build_death_screen()
+	_death_screen = DeathScreen.new()
+	add_child(_death_screen)
 	var p := get_node_or_null(player)
 	if p and p.has_signal("entering_shelter"):
 		p.entering_shelter.connect(func(_duration: float) -> void: _frozen_stopped = true)
@@ -76,11 +77,6 @@ func is_dead() -> bool:
 	return _dead
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if _dead and event.is_action_pressed("restart"):
-		get_tree().reload_current_scene()
-
-
 func _ramp(range_: Vector2) -> float:
 	return smoothstep(range_.x, range_.y, exposure)
 
@@ -107,9 +103,7 @@ func _die() -> void:
 	var p := get_node_or_null(player)
 	if p and p.has_method("die"):
 		p.die()
-	_death_screen.visible = true
-	_death_screen.modulate.a = 0.0
-	create_tween().tween_property(_death_screen, "modulate:a", 1.0, 2.0).set_delay(1.0)
+	_death_screen.show_death()
 	died.emit()
 
 
@@ -137,27 +131,3 @@ func _build_overlay() -> void:
 	_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(_overlay)
-
-
-func _build_death_screen() -> void:
-	_death_screen = VBoxContainer.new()
-	_death_screen.name = "DeathScreen"
-	_death_screen.set_anchors_preset(Control.PRESET_CENTER)
-	_death_screen.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_death_screen.grow_vertical = Control.GROW_DIRECTION_BOTH
-	_death_screen.alignment = BoxContainer.ALIGNMENT_CENTER
-	_death_screen.visible = false
-	add_child(_death_screen)
-
-	var title := Label.new()
-	title.text = "You froze to death"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 42)
-	title.add_theme_color_override("font_color", Color(0.75, 0.82, 0.95))
-	_death_screen.add_child(title)
-
-	var hint := Label.new()
-	hint.text = "Press R to try again"
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_color_override("font_color", Color(0.5, 0.55, 0.65))
-	_death_screen.add_child(hint)

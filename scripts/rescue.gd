@@ -1,5 +1,6 @@
 extends Node3D
 ## Scene 3: you crawl out of the carcass and the rescue helicopter comes down out of the storm.
+## You're out in the cold again, so you can still freeze to death while you wait (FreezeEffect).
 ## It starts far overhead and slowly descends, getting louder and whipping up the wind and snow.
 ## At hover height it lowers a rope; walk to it and press E to grab on. You're winched up as it
 ## climbs away, then a wide shot from high up watches it fly off.
@@ -35,6 +36,7 @@ extends Node3D
 @onready var _captions: Captions = $Captions
 @onready var _cutscene_camera: Camera3D = $CutsceneCamera
 @onready var _hands: Node3D = $Player/Head/Camera3D/Hands
+@onready var _freeze: FreezeEffect = $FreezeEffect
 
 var _start: Vector3
 var _base_wind := 0.0
@@ -115,6 +117,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _on_rope_grabbed() -> void:
+	# Saved: the cold stops and the frost slowly clears.
+	_freeze.enabled = false
+	create_tween().tween_property(_freeze, "exposure", 0.0, 6.0)
 	_hovering = false
 	_flying_off = true
 	_player.attach_to(_rope_grab)

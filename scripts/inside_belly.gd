@@ -40,7 +40,7 @@ var _look := Vector2.ZERO
 var _overlay_mat: ShaderMaterial
 var _fade: ColorRect
 var _hint: Label
-var _death_screen: Control
+var _death_screen: DeathScreen
 var _ambience_playback: AudioStreamGeneratorPlayback
 var _wind := 0.0
 var _wind_time := 0.0
@@ -108,8 +108,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	elif _dead and event.is_action_pressed("restart"):
-		get_tree().reload_current_scene()
 
 
 func _update_hint() -> void:
@@ -141,9 +139,7 @@ func _die() -> void:
 	_dead = true
 	_radio.enabled = false
 	_hint.text = ""
-	_death_screen.visible = true
-	_death_screen.modulate.a = 0.0
-	create_tween().tween_property(_death_screen, "modulate:a", 1.0, 2.0).set_delay(1.0)
+	_death_screen.show_death()
 
 
 func _build_ui() -> void:
@@ -167,23 +163,8 @@ func _build_ui() -> void:
 	_hint.add_theme_color_override("font_color", Color(0.75, 0.6, 0.55, 0.8))
 	layer.add_child(_hint)
 
-	_death_screen = VBoxContainer.new()
-	_death_screen.set_anchors_preset(Control.PRESET_CENTER)
-	_death_screen.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_death_screen.grow_vertical = Control.GROW_DIRECTION_BOTH
-	_death_screen.visible = false
+	_death_screen = DeathScreen.new(Color(0.78, 0.12, 0.1))
 	layer.add_child(_death_screen)
-	var title := Label.new()
-	title.text = "You didn't make it"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 42)
-	title.add_theme_color_override("font_color", Color(0.75, 0.2, 0.18))
-	_death_screen.add_child(title)
-	var again := Label.new()
-	again.text = "Press R to try again"
-	again.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	again.add_theme_color_override("font_color", Color(0.55, 0.4, 0.4))
-	_death_screen.add_child(again)
 
 	_fade = ColorRect.new()
 	_fade.color = Color.BLACK

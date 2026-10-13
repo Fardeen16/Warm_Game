@@ -126,36 +126,22 @@ func _build_menu() -> void:
 	column.add_theme_constant_override("separation", 6)
 	root.add_child(column)
 
-	column.add_child(_text("A WINTER SURVIVAL STORY", GameFonts.label(6), 14, GameFonts.FROST_DIM))
-	column.add_child(_text("STAYING", GameFonts.title(14), 64, GameFonts.FROST))
-	column.add_child(_text("WARM", GameFonts.title(14), 64, GameFonts.FROST))
+	column.add_child(GameUI.label("A WINTER SURVIVAL STORY", GameFonts.label(6), 14, GameFonts.FROST_DIM))
+	column.add_child(GameUI.label("STAYING", GameFonts.title(14), 64, GameFonts.FROST))
+	column.add_child(GameUI.label("WARM", GameFonts.title(14), 64, GameFonts.FROST))
 
 	var rule := ColorRect.new()
 	rule.color = Color(GameFonts.FROST, 0.35)
 	rule.custom_minimum_size = Vector2(220, 1)
 	rule.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	column.add_child(rule)
-	column.add_child(_text("one night  ·  one storm  ·  one body to hide in", GameFonts.title_italic(), 17, GameFonts.FROST_DIM))
+	column.add_child(GameUI.label("one night  ·  one storm  ·  one body to hide in", GameFonts.title_italic(), 17, GameFonts.FROST_DIM))
 
 	var gap := Control.new()
 	gap.custom_minimum_size = Vector2(0, 46)
 	column.add_child(gap)
 
-	var start := Button.new()
-	start.text = "START GAME"
-	start.custom_minimum_size = Vector2(250, 54)
-	start.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	start.focus_mode = Control.FOCUS_ALL
-	start.add_theme_font_override("font", GameFonts.label(7))
-	start.add_theme_font_size_override("font_size", 20)
-	start.add_theme_color_override("font_color", GameFonts.FROST)
-	start.add_theme_color_override("font_hover_color", Color(0.05, 0.07, 0.1))
-	start.add_theme_color_override("font_pressed_color", Color(0.05, 0.07, 0.1))
-	start.add_theme_color_override("font_focus_color", GameFonts.FROST)
-	start.add_theme_stylebox_override("normal", _button_box(Color(0.0, 0.0, 0.0, 0.25), Color(GameFonts.FROST, 0.7)))
-	start.add_theme_stylebox_override("hover", _button_box(Color(GameFonts.FROST, 0.92), GameFonts.FROST))
-	start.add_theme_stylebox_override("pressed", _button_box(Color(GameFonts.FROST, 0.75), GameFonts.FROST))
-	start.add_theme_stylebox_override("focus", _button_box(Color(0, 0, 0, 0), Color(GameFonts.FROST, 0.9)))
+	var start := GameUI.button("START GAME")
 	start.pressed.connect(_on_start_pressed, CONNECT_ONE_SHOT)
 	column.add_child(start)
 	start.grab_focus.call_deferred()
@@ -163,23 +149,3 @@ func _build_menu() -> void:
 	root.modulate.a = 0.0
 	create_tween().tween_property(root, "modulate:a", 1.0, 1.5)
 
-
-func _text(text: String, font: Font, size: int, color: Color) -> Label:
-	var label := Label.new()
-	label.text = text
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_override("font", font)
-	label.add_theme_font_size_override("font_size", size)
-	label.add_theme_color_override("font_color", color)
-	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.6))
-	label.add_theme_constant_override("shadow_offset_y", 2)
-	return label
-
-
-func _button_box(fill: Color, border: Color) -> StyleBoxFlat:
-	var box := StyleBoxFlat.new()
-	box.bg_color = fill
-	box.border_color = border
-	box.set_border_width_all(1)
-	box.set_content_margin_all(10)
-	return box

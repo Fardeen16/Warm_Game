@@ -188,7 +188,6 @@ player = NodePath("../Player")
 
 [node name="FreezeEffect" type="CanvasLayer" parent="."]
 script = ExtResource("7_freeze")
-enabled = false
 player = NodePath("../Player")
 
 [node name="Helicopter" parent="." instance=ExtResource("13_heli")]
