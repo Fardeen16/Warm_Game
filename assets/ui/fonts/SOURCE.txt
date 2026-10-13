@@ -1,0 +1,3 @@
+Playfair Display (titles) and Barlow / Barlow Condensed (labels, captions)
+from https://github.com/google/fonts
+License: SIL Open Font License 1.1 (see the OFL files here).
