@@ -25,6 +25,8 @@ extends Node3D
 @export var credits_dedication: String = "Abdul Rahman"
 ## Photo shown under the names (jpg or png). Leave the file out and the credits skip it.
 @export_file("*.jpg", "*.jpeg", "*.png") var credits_photo: String = "res://assets/ui/credits/us_photo.jpg"
+## Photo shown between "dedicated to" and the name. Leave the file out to skip it.
+@export_file("*.jpg", "*.jpeg", "*.png") var dedication_photo: String = "res://assets/ui/credits/dedication_photo.jpg"
 ## Seconds each credits page stays up.
 @export var credits_hold: float = 5.5
 
@@ -157,32 +159,46 @@ func _roll_credits() -> void:
 	var page := _credits_page()
 	page.add_child(_credit_text("A GAME BY", GameFonts.label(8), 18, GameFonts.FROST_DIM))
 	page.add_child(_credit_text(credits_by, GameFonts.title(4), 58, GameFonts.FROST))
-	var photo := _load_photo()
+	var photo := _load_photo(credits_photo)
 	if photo:
-		var gap := Control.new()
-		gap.custom_minimum_size = Vector2(0, 18)
-		page.add_child(gap)
-		var frame := PanelContainer.new()
-		var border := StyleBoxFlat.new()
-		border.bg_color = Color(GameFonts.FROST, 0.9)
-		border.set_content_margin_all(6)
-		frame.add_theme_stylebox_override("panel", border)
-		frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		var picture := TextureRect.new()
-		picture.texture = photo
-		picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		var aspect := float(photo.get_width()) / photo.get_height()
-		picture.custom_minimum_size = Vector2(260.0 * aspect, 260.0)
-		frame.add_child(picture)
-		page.add_child(frame)
+		page.add_child(_spacer(18))
+		page.add_child(_framed(photo, 260.0))
 	await _show_page(page)
 
-	# Page 2: the dedication.
+	# Page 2: the dedication, with their photo between the two lines.
 	page = _credits_page()
 	page.add_child(_credit_text("dedicated to", GameFonts.title_italic(), 30, GameFonts.FROST_DIM))
+	var dedicated := _load_photo(dedication_photo)
+	if dedicated:
+		page.add_child(_spacer(8))
+		page.add_child(_framed(dedicated, 280.0))
+		page.add_child(_spacer(8))
 	page.add_child(_credit_text(credits_dedication, GameFonts.title(6), 72, GameFonts.FROST))
 	await _show_page(page)
+
+
+## A photo in a thin frost-white frame, scaled to the given height.
+func _framed(photo: Texture2D, height: float) -> Control:
+	var frame := PanelContainer.new()
+	var border := StyleBoxFlat.new()
+	border.bg_color = Color(GameFonts.FROST, 0.9)
+	border.set_content_margin_all(6)
+	frame.add_theme_stylebox_override("panel", border)
+	frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	var picture := TextureRect.new()
+	picture.texture = photo
+	picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var aspect := float(photo.get_width()) / photo.get_height()
+	picture.custom_minimum_size = Vector2(height * aspect, height)
+	frame.add_child(picture)
+	return frame
+
+
+func _spacer(height: float) -> Control:
+	var gap := Control.new()
+	gap.custom_minimum_size = Vector2(0, height)
+	return gap
 
 
 func _credits_page() -> VBoxContainer:
@@ -216,8 +232,8 @@ func _credit_text(text: String, font: Font, size: int, color: Color) -> Label:
 	return label
 
 
-func _load_photo() -> Texture2D:
-	for path in [credits_photo, credits_photo.get_basename() + ".png", credits_photo.get_basename() + ".jpeg"]:
+func _load_photo(file: String) -> Texture2D:
+	for path in [file, file.get_basename() + ".png", file.get_basename() + ".jpeg"]:
 		if ResourceLoader.exists(path):
 			return load(path) as Texture2D
 	return null
