@@ -17,8 +17,15 @@ extends Node3D
 @export_range(0.0, 3.0, 0.05) var shake: float = 0.4
 @export var arrival_lines: PackedStringArray = ["That sound... is that a chopper?"]
 @export var rope_lines: PackedStringArray = ["The rope! I have to grab it."]
-## Where "play again" goes.
+## Where the game returns after the credits (the start menu).
 @export_file("*.tscn") var restart_scene: String = "res://scenes/main.tscn"
+## The credits that roll after the helicopter leaves.
+@export var credits_by: String = "Fardeen & Faizan"
+@export var credits_dedication: String = "Abdul Rahman"
+## Photo shown under the names (jpg or png). Leave the file out and the credits skip it.
+@export_file("*.jpg", "*.jpeg", "*.png") var credits_photo: String = "res://assets/ui/credits/us_photo.jpg"
+## Seconds each credits page stays up.
+@export var credits_hold: float = 5.5
 
 @onready var _heli: Helicopter = $Helicopter
 @onready var _player: Player = $Player
@@ -37,7 +44,7 @@ var _flying_off := false
 var _ended := false
 var _time := 0.0
 var _fade: ColorRect
-var _end_screen: Control
+var _layer: CanvasLayer
 
 
 func _ready() -> void:
@@ -102,8 +109,9 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _ended and event.is_action_pressed("restart"):
-		get_tree().change_scene_to_file(restart_scene)
+	# Any key or click skips to the end of the credits.
+	if _ended and (event is InputEventKey or event is InputEventMouseButton) and event.is_pressed():
+		_back_to_menu()
 
 
 func _on_rope_grabbed() -> void:
@@ -135,8 +143,86 @@ func _on_rope_grabbed() -> void:
 	fade_out.tween_property(_fade, "modulate:a", 1.0, 2.5)
 	await fade_out.finished
 	_ended = true
-	_end_screen.visible = true
-	create_tween().tween_property(_end_screen, "modulate:a", 1.0, 1.5)
+	await _roll_credits()
+	_back_to_menu()
+
+
+func _roll_credits() -> void:
+	# Page 1: who made it.
+	var page := _credits_page()
+	page.add_child(_credit_text("A GAME BY", GameFonts.label(8), 18, GameFonts.FROST_DIM))
+	page.add_child(_credit_text(credits_by, GameFonts.title(4), 58, GameFonts.FROST))
+	var photo := _load_photo()
+	if photo:
+		var gap := Control.new()
+		gap.custom_minimum_size = Vector2(0, 18)
+		page.add_child(gap)
+		var frame := PanelContainer.new()
+		var border := StyleBoxFlat.new()
+		border.bg_color = Color(GameFonts.FROST, 0.9)
+		border.set_content_margin_all(6)
+		frame.add_theme_stylebox_override("panel", border)
+		frame.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		var picture := TextureRect.new()
+		picture.texture = photo
+		picture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		var aspect := float(photo.get_width()) / photo.get_height()
+		picture.custom_minimum_size = Vector2(260.0 * aspect, 260.0)
+		frame.add_child(picture)
+		page.add_child(frame)
+	await _show_page(page)
+
+	# Page 2: the dedication.
+	page = _credits_page()
+	page.add_child(_credit_text("dedicated to", GameFonts.title_italic(), 30, GameFonts.FROST_DIM))
+	page.add_child(_credit_text(credits_dedication, GameFonts.title(6), 72, GameFonts.FROST))
+	await _show_page(page)
+
+
+func _credits_page() -> VBoxContainer:
+	var page := VBoxContainer.new()
+	page.set_anchors_preset(Control.PRESET_CENTER)
+	page.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	page.grow_vertical = Control.GROW_DIRECTION_BOTH
+	page.alignment = BoxContainer.ALIGNMENT_CENTER
+	page.add_theme_constant_override("separation", 10)
+	page.modulate.a = 0.0
+	_layer.add_child(page)
+	return page
+
+
+func _show_page(page: Control) -> void:
+	var tween := create_tween()
+	tween.tween_property(page, "modulate:a", 1.0, 1.5)
+	tween.tween_interval(credits_hold)
+	tween.tween_property(page, "modulate:a", 0.0, 1.5)
+	await tween.finished
+	page.queue_free()
+
+
+func _credit_text(text: String, font: Font, size: int, color: Color) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_override("font", font)
+	label.add_theme_font_size_override("font_size", size)
+	label.add_theme_color_override("font_color", color)
+	return label
+
+
+func _load_photo() -> Texture2D:
+	for path in [credits_photo, credits_photo.get_basename() + ".png", credits_photo.get_basename() + ".jpeg"]:
+		if ResourceLoader.exists(path):
+			return load(path) as Texture2D
+	return null
+
+
+func _back_to_menu() -> void:
+	if not is_inside_tree():
+		return
+	GameIntro.skip_menu = false
+	get_tree().change_scene_to_file(restart_scene)
 
 
 func _face_heli_toward(target: Vector3) -> void:
@@ -156,21 +242,4 @@ func _build_ui() -> void:
 	_fade.set_anchors_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(_fade)
 
-	_end_screen = VBoxContainer.new()
-	_end_screen.set_anchors_preset(Control.PRESET_CENTER)
-	_end_screen.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_end_screen.grow_vertical = Control.GROW_DIRECTION_BOTH
-	_end_screen.visible = false
-	_end_screen.modulate.a = 0.0
-	layer.add_child(_end_screen)
-	var title := Label.new()
-	title.text = "You made it out."
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 42)
-	title.add_theme_color_override("font_color", Color(0.8, 0.86, 0.95))
-	_end_screen.add_child(title)
-	var again := Label.new()
-	again.text = "Press R to play again"
-	again.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	again.add_theme_color_override("font_color", Color(0.5, 0.55, 0.65))
-	_end_screen.add_child(again)
+	_layer = layer

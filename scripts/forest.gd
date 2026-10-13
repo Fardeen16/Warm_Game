@@ -31,6 +31,16 @@ extends Node3D
 	set(value):
 		edge_band = value
 		_regenerate()
+## Nodes no tree may grow near (the jeep, the bison, the spawn point...).
+@export var keep_clear: Array[NodePath] = []:
+	set(value):
+		keep_clear = value
+		_regenerate()
+## How far trees stay from each keep_clear node (m).
+@export var keep_clear_radius: float = 5.0:
+	set(value):
+		keep_clear_radius = value
+		_regenerate()
 ## Tree models to scatter. Leave empty for simple placeholder pines.
 @export var tree_models: Array[PackedScene] = []:
 	set(value):
@@ -104,7 +114,20 @@ func _regenerate() -> void:
 			spot = Vector3(rng.randf_range(-edge_band.y, edge_band.y), 0.0, rng.randf_range(-edge_band.y, edge_band.y))
 		spots.append(spot)
 
+	var clear_spots: Array[Vector3] = []
+	for path in keep_clear:
+		var node := get_node_or_null(path) as Node3D
+		if node:
+			clear_spots.append(to_local(node.global_position))
+
 	for spot in spots:
+		var blocked := false
+		for clear in clear_spots:
+			if Vector2(spot.x - clear.x, spot.z - clear.z).length() < keep_clear_radius:
+				blocked = true
+				break
+		if blocked:
+			continue
 		var tree := StaticBody3D.new()
 		tree.position = spot
 		if terrain:

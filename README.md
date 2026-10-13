@@ -27,6 +27,8 @@ Note: the **SnowStorm** node in `scenes/main.tscn` is currently hidden to save b
 editing, so there is no snow in-game until you un-hide it (eye icon next to SnowStorm).
 
 ## Scenes
+- **Start menu** (in `scenes/main.tscn`): the camera looks at the abandoned jeep in the storm,
+  with the title and a Start Game button; starting pans the camera into the player's eyes.
 - **Scene 1, outside** (`scenes/main.tscn`): the blizzard, freezing to death over 90 seconds,
   cutting open the bison and crawling in.
 - **Scene 2, inside the carcass** (`scenes/inside_carcass.tscn`): lying in the dark, bleeding out
@@ -35,6 +37,8 @@ editing, so there is no snow in-game until you un-hide it (eye icon next to Snow
 - **Scene 3, rescue** (`scenes/rescue.tscn`): built from a copy of scene 1. A helicopter comes down
   out of the storm, getting louder and whipping up the wind; it lowers a rope, you walk over and
   press E to grab on, get winched up, and a wide shot watches it fly away.
+- **Credits**: "A Game by Fardeen & Faizan" with a photo (`assets/ui/credits/us_photo.jpg` or `.png`),
+  then the dedication, then back to the start menu.
 
 ## Project layout
 ```

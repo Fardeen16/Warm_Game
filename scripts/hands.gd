@@ -9,8 +9,11 @@ extends Node3D
 ## Size and speed of the sawing strokes.
 @export var saw_distance: float = 0.04
 @export var saw_speed: float = 9.0
-## Where the lantern hangs from the right fist, in camera space (m).
-@export var lantern_offset: Vector3 = Vector3(0.0, -0.24, 0.0)
+## Where the lantern hangs below the right fist, in camera space (m).
+@export var lantern_offset: Vector3 = Vector3(0.0, -0.27, 0.0)
+## The middle of the closed fingers, in the right hand's own space: the handle sits here, not
+## at the wrist.
+@export var lantern_grip: Vector3 = Vector3(0.0, 0.11, 0.0)
 
 @onready var _right: FPArms = $RightArm
 @onready var _left: FPArms = $LeftArm
@@ -51,6 +54,6 @@ func _process(delta: float) -> void:
 	_left.position = _left_rest + Vector3(0.0, -0.4, 0.1) * (1.0 - smoothstep(0.0, 1.0, _blend)) + reach * _blend
 
 	# Lantern hangs below the right fist, kept upright.
-	var fist := _right.bone_transform("hand.R").origin
+	var fist := _right.bone_transform("hand.R") * lantern_grip
 	_lantern.global_position = fist + global_basis * lantern_offset
 

@@ -11,7 +11,10 @@
 [ext_resource type="Script" uid="uid://db88l8nfsi54s" path="res://scripts/snow_terrain.gd" id="9_terrain"]
 [ext_resource type="Script" uid="uid://dag6q2xt46i8o" path="res://scripts/footprints.gd" id="10_footprints"]
 [ext_resource type="PackedScene" uid="uid://iu3pfbh5n5bc" path="res://assets/models/props/jeep/Landyroamer.fbx" id="11_jeep"]
-[ext_resource type="Script" path="res://scripts/storm_audio.gd" id="20_storm_audio"]
+[ext_resource type="Script" uid="uid://dde84lyh88ln" path="res://scripts/storm_audio.gd" id="20_storm_audio"]
+[ext_resource type="Script" path="res://scripts/game_intro.gd" id="21_intro"]
+[ext_resource type="Script" path="res://scripts/captions.gd" id="22_captions"]
+[ext_resource type="Texture2D" path="res://assets/ui/psx_ui/fullres_720p/Skin05-Cropped_Text-Block.png" id="23_box"]
 [ext_resource type="PackedScene" uid="uid://7knh15b24r0f" path="res://assets/models/environment/trees/retro_tree_pack/dead_tree_rt_1.glb" id="t_dead_tree_rt_1"]
 [ext_resource type="PackedScene" uid="uid://ccunhd1xbfqoy" path="res://assets/models/environment/trees/retro_tree_pack/dead_tree_rt_2.glb" id="t_dead_tree_rt_2"]
 [ext_resource type="PackedScene" uid="uid://bfdstnnkqcqhw" path="res://assets/models/environment/trees/retro_tree_pack/small_tree_rt_1.glb" id="t_small_tree_rt_1"]
@@ -85,6 +88,7 @@ radius = 0.3
 height = 1.78
 
 [node name="Main" type="Node3D" unique_id=1983626017]
+script = ExtResource("21_intro")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=408806856]
 environment = SubResource("Environment_storm")
@@ -106,6 +110,8 @@ script = ExtResource("4_bounds")
 
 [node name="Forest" type="Node3D" parent="." unique_id=1759031122]
 script = ExtResource("3_forest")
+keep_clear = Array[NodePath]([NodePath("../Jeep"), NodePath("../BisonCarcass"), NodePath("../Player")])
+keep_clear_radius = 6.0
 tree_models = Array[PackedScene]([ExtResource("t_tree_rt_1"), ExtResource("t_tree_rt_2"), ExtResource("t_tree_rt_2_1"), ExtResource("t_tree_rt_3"), ExtResource("t_tree_rt_4"), ExtResource("t_small_tree_rt_1"), ExtResource("t_dead_tree_rt_1"), ExtResource("t_dead_tree_rt_2")])
 
 [node name="Jeep" type="StaticBody3D" parent="." unique_id=722985508]
@@ -126,8 +132,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
 shape = SubResource("CapsuleShape3D_player")
 
 [node name="Body" type="MeshInstance3D" parent="Player" unique_id=1076589425]
-visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, 0)
+visible = false
 cast_shadow = 0
 mesh = SubResource("CapsuleMesh_player")
 
@@ -145,7 +151,7 @@ current = true
 [node name="Hands" parent="Player/Head/Camera3D" unique_id=852013023 instance=ExtResource("8_hands")]
 
 [node name="BisonCarcass" parent="." unique_id=1037808181 instance=ExtResource("5_bison")]
-transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 1.5, 0, -5)
+transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -4, 0, -12)
 
 [node name="SnowStorm" type="Node3D" parent="." unique_id=2091973302]
 script = ExtResource("2_storm")
@@ -165,7 +171,14 @@ player = NodePath("../Player")
 script = ExtResource("7_freeze")
 player = NodePath("../Player")
 
-[node name="StormAudio" type="AudioStreamPlayer" parent="."]
+[node name="StormAudio" type="AudioStreamPlayer" parent="." unique_id=1007907147]
 volume_db = -3.0
 script = ExtResource("20_storm_audio")
 storm = NodePath("../SnowStorm")
+
+[node name="MenuCamera" type="Camera3D" parent="."]
+fov = 55.0
+
+[node name="Captions" type="CanvasLayer" parent="."]
+script = ExtResource("22_captions")
+box_texture = ExtResource("23_box")

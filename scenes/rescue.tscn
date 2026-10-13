@@ -126,6 +126,8 @@ script = ExtResource("4_bounds")
 script = ExtResource("3_forest")
 tree_count = 420
 outer_radius = 120.0
+keep_clear = Array[NodePath]([NodePath("../Jeep"), NodePath("../BisonCarcass"), NodePath("../Player")])
+keep_clear_radius = 6.0
 tree_models = Array[PackedScene]([ExtResource("t_tree_rt_1"), ExtResource("t_tree_rt_2"), ExtResource("t_tree_rt_2_1"), ExtResource("t_tree_rt_3"), ExtResource("t_tree_rt_4"), ExtResource("t_small_tree_rt_1"), ExtResource("t_dead_tree_rt_1"), ExtResource("t_dead_tree_rt_2")])
 
 [node name="Jeep" type="StaticBody3D" parent="."]
@@ -165,7 +167,7 @@ current = true
 [node name="Hands" parent="Player/Head/Camera3D" instance=ExtResource("8_hands")]
 
 [node name="BisonCarcass" parent="." instance=ExtResource("5_bison")]
-transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 1.5, 0, -5)
+transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -4, 0, -12)
 is_cut_open = true
 can_enter = false
 
