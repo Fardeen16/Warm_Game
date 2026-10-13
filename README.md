@@ -23,8 +23,8 @@ before you freeze.
 2. Clone this repo and open `project.godot` in Godot.
 3. Press **F5** to play.
 
-Note: the **SnowStorm** node in `scenes/main.tscn` is currently hidden to save battery while
-editing, so there is no snow in-game until you un-hide it (eye icon next to SnowStorm).
+Tip: you can hide the **SnowStorm** node in the editor (eye icon) to save battery while editing;
+the game always turns it back on when it runs.
 
 ## Scenes
 - **Start menu** (in `scenes/main.tscn`): the camera looks at the abandoned jeep in the storm,
