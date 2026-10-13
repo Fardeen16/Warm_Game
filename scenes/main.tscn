@@ -98,6 +98,8 @@ transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0
 light_color = Color(0.7, 0.76, 0.9, 1)
 light_energy = 0.2
 shadow_enabled = true
+directional_shadow_mode = 1
+directional_shadow_max_distance = 40.0
 sky_mode = 1
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=329331001]
@@ -155,6 +157,7 @@ transform = Transform3D(0.5, 0, -0.866025, 0, 1, 0, 0.866025, 0, 0.5, -4, 0, -18
 
 [node name="SnowStorm" type="Node3D" parent="." unique_id=2091973302]
 script = ExtResource("2_storm")
+follow_target = NodePath("../Player")
 intensity = 0.99
 storm_speed = 2.5
 cloud_density_storm = 0.69

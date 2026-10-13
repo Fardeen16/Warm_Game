@@ -34,6 +34,7 @@ var _menu: CanvasLayer
 func _ready() -> void:
 	# The storm is often hidden in the editor to save battery; always show it in the game.
 	_storm.visible = true
+	GameSettings.apply(self)
 	if skip_menu:
 		_start_playing()
 		return
@@ -145,6 +146,16 @@ func _build_menu() -> void:
 	start.pressed.connect(_on_start_pressed, CONNECT_ONE_SHOT)
 	column.add_child(start)
 	start.grab_focus.call_deferred()
+
+	# High / Low graphics for weaker laptops; remembered between launches.
+	GameSettings.load_settings()
+	var graphics := GameUI.button("GRAPHICS: LOW" if GameSettings.low_graphics else "GRAPHICS: HIGH", 250.0)
+	graphics.custom_minimum_size.y = 40
+	graphics.add_theme_font_size_override("font_size", 14)
+	graphics.pressed.connect(func() -> void:
+		GameSettings.set_low_graphics(not GameSettings.low_graphics)
+		get_tree().reload_current_scene())
+	column.add_child(graphics)
 
 	root.modulate.a = 0.0
 	create_tween().tween_property(root, "modulate:a", 1.0, 1.5)

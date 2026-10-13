@@ -52,6 +52,7 @@ var _layer: CanvasLayer
 
 
 func _ready() -> void:
+	GameSettings.apply(self)
 	_build_ui()
 	_base_wind = _storm.wind_strength
 	_base_intensity = _storm.intensity
@@ -139,6 +140,8 @@ func _on_rope_grabbed() -> void:
 	create_tween().tween_property(_storm, "haze_density_storm", 0.025, 2.0)
 	_cutscene_camera.look_at(_heli.global_position)
 	_cutscene_camera.current = true
+	# Snow only falls around whatever it follows: keep it falling in front of this lens.
+	_storm.follow_target = _storm.get_path_to(_cutscene_camera)
 	_hands.visible = false
 	var leave := create_tween()
 	leave.tween_property(_heli, "global_position", away, 9.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)

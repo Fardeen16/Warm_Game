@@ -48,6 +48,7 @@ var _wind_time := 0.0
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	GameSettings.apply(self)
 	_rest_rotation = _camera.rotation
 	_rest_position = _camera.position
 	_radio_rest = _radio.transform

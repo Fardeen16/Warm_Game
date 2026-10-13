@@ -15,7 +15,7 @@ const FLAKE_SHADER := preload("res://shaders/snowflake.gdshader")
 ## Changing it restarts the snowfall.
 @export_range(0.25, 4.0, 0.05) var storm_speed: float = 1.0
 ## Total number of flakes at full intensity. Changing this restarts the snowfall.
-@export_range(1000, 150000, 1000) var max_flakes: int = 100000
+@export_range(1000, 150000, 1000) var max_flakes: int = 18000
 ## Downward speed of medium flakes (m/s). Small flakes fall a bit faster, large ones slower.
 @export_range(0.5, 15.0, 0.1) var fall_speed: float = 3.0
 @export var snow_color: Color = Color(0.85, 0.88, 0.94, 0.9)
@@ -55,8 +55,11 @@ const FLAKE_SHADER := preload("res://shaders/snowflake.gdshader")
 @export_range(0.0, 45.0, 0.5) var flake_spread: float = 8.0
 
 @export_group("Area")
-## Width/depth of the snowing area, centered on this node. Keep it a bit larger than the map.
-@export_range(5.0, 150.0, 1.0) var area_size: float = 50.0
+## Snow only falls in a box around this node (the player), which moves with it. Much cheaper
+## than snowing over the whole map. Empty = centered on the storm node itself.
+@export var follow_target: NodePath
+## Width/depth of the snowing box around the target.
+@export_range(5.0, 150.0, 1.0) var area_size: float = 24.0
 ## Height where flakes spawn.
 @export_range(5.0, 60.0, 1.0) var area_height: float = 15.0
 
@@ -226,6 +229,8 @@ func _update_storm(delta: float) -> void:
 	var sizes: Array[float] = [small_size, medium_size, large_size]
 	var size_shares: Array[float] = [small_share, medium_share, large_share]
 	var size_total := small_share + medium_share + large_share
+	var target := get_node_or_null(follow_target) as Node3D
+	var center := target.global_position if target else global_position
 
 	for layer in _layers:
 		var size_class: int = layer.size_class
@@ -256,13 +261,13 @@ func _update_storm(delta: float) -> void:
 		(layer.quad as QuadMesh).size = Vector2(1.0, flake_stretch) * sizes[size_class]
 
 		# Spawn upwind and above the area so the flakes land across it.
-		particles.global_position = global_position + Vector3.UP * area_height - base_wind * lifetime
+		particles.global_position = center + Vector3.UP * area_height - base_wind * lifetime
 
 	_draw_mat.set_shader_parameter("color", snow_color)
 
 	_cloud_volume.visible = clouds_enabled
 	_cloud_volume.size = Vector3(area_size * 2.0, cloud_height, area_size * 2.0)
-	_cloud_volume.global_position = global_position + Vector3.UP * cloud_height * 0.5
+	_cloud_volume.global_position = center + Vector3.UP * cloud_height * 0.5
 	_cloud_offset += base_wind * cloud_speed * delta
 	_cloud_mat.set_shader_parameter("density", lerpf(cloud_density_calm, cloud_density_storm, intensity))
 	_cloud_mat.set_shader_parameter("emission", cloud_color * cloud_glow)

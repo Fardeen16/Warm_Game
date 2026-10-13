@@ -11,7 +11,7 @@ extends Node3D
 ## Print width and length (m).
 @export var print_size: Vector2 = Vector2(0.12, 0.3)
 ## Oldest prints are removed past this many.
-@export_range(10, 1000, 10) var max_prints: int = 200
+@export_range(10, 1000, 10) var max_prints: int = 120
 ## Seconds before the snow starts filling a print in, and until it is gone.
 @export var fill_start: float = 30.0
 @export var fill_time: float = 120.0

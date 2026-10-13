@@ -107,11 +107,13 @@ transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0
 light_color = Color(0.7, 0.76, 0.9, 1)
 light_energy = 0.2
 shadow_enabled = true
+directional_shadow_mode = 1
+directional_shadow_max_distance = 40.0
 sky_mode = 1
 
 [node name="Ground" type="StaticBody3D" parent="."]
 script = ExtResource("9_terrain")
-size = 320.0
+size = 200.0
 flatten_around = Array[NodePath]([NodePath("../BisonCarcass"), NodePath("../Player"), NodePath("../Jeep")])
 material = SubResource("StandardMaterial3D_snow")
 
@@ -124,8 +126,9 @@ script = ExtResource("4_bounds")
 
 [node name="Forest" type="Node3D" parent="."]
 script = ExtResource("3_forest")
-tree_count = 420
-outer_radius = 120.0
+tree_count = 240
+outer_radius = 100.0
+tree_view_distance = 150.0
 keep_clear = Array[NodePath]([NodePath("../Jeep"), NodePath("../BisonCarcass"), NodePath("../Player")])
 keep_clear_radius = 6.0
 tree_models = Array[PackedScene]([ExtResource("t_tree_rt_1"), ExtResource("t_tree_rt_2"), ExtResource("t_tree_rt_2_1"), ExtResource("t_tree_rt_3"), ExtResource("t_tree_rt_4"), ExtResource("t_small_tree_rt_1"), ExtResource("t_dead_tree_rt_1"), ExtResource("t_dead_tree_rt_2")])
@@ -173,6 +176,7 @@ can_enter = false
 
 [node name="SnowStorm" type="Node3D" parent="."]
 script = ExtResource("2_storm")
+follow_target = NodePath("../Player")
 intensity = 0.99
 storm_speed = 2.5
 clouds_enabled = false

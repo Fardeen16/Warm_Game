@@ -57,6 +57,18 @@ extends Node3D
 		model_rotation = value
 		_regenerate()
 
+## Trees further than this from the camera aren't drawn (they're lost in the fog anyway).
+@export var tree_view_distance: float = 80.0:
+	set(value):
+		tree_view_distance = value
+		_regenerate()
+## Only trees within this distance of the center (along x or z) get collision; the rest are
+## scenery beyond the invisible walls and never touched.
+@export var collision_extent: float = 22.0:
+	set(value):
+		collision_extent = value
+		_regenerate()
+
 var _container: Node3D
 
 
@@ -147,10 +159,13 @@ func _regenerate() -> void:
 			var model := tree_models[rng.randi() % tree_models.size()].instantiate() as Node3D
 			model.rotation_degrees = model_rotation
 			tree.add_child(model)
-		var collider := CollisionShape3D.new()
-		collider.shape = trunk_shape
-		collider.position.y = 1.5
-		tree.add_child(collider)
+			for mesh: MeshInstance3D in model.find_children("*", "MeshInstance3D", true, false):
+				mesh.visibility_range_end = tree_view_distance
+		if maxf(absf(spot.x), absf(spot.z)) <= collision_extent:
+			var collider := CollisionShape3D.new()
+			collider.shape = trunk_shape
+			collider.position.y = 1.5
+			tree.add_child(collider)
 
 
 func _add_mesh(parent: Node3D, mesh: Mesh, height: float) -> void:
